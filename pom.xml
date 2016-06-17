@@ -1,0 +1,170 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+  http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>loggerServer</artifactId>
+	<groupId>com.ntua.ote</groupId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>A Logger Server</name>
+
+	<modules>
+		<module>web</module>
+		<module>ear</module>
+		<module>core</module>
+		<module>persistence</module>
+	</modules>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.vesrion>0.0.1-SNAPSHOT</project.build.vesrion>
+		<java.source.compile.version>1.7</java.source.compile.version>
+		<java.target.compile.version>1.7</java.target.compile.version>
+
+		<org.springframework.version>4.1.4.RELEASE</org.springframework.version>
+		<org.richfaces.bom.version>4.3.7.Final</org.richfaces.bom.version>
+		<com.sun.faces.jsf.version>2.1.25</com.sun.faces.jsf.version>
+		<apache.poi.version>3.12-beta1</apache.poi.version>
+		<log4j.version>1.2.16</log4j.version>
+		<cdi.version>1.2</cdi.version>
+		<junit.version>4.12</junit.version>
+		<servlet.api.version>3.0.1</servlet.api.version>
+		<mysql-connector-java.version>5.1.39</mysql-connector-java.version>
+		<!-- maven Plugins -->
+		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>
+		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
+		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
+		<version.ear.plugin>2.10</version.ear.plugin>
+		<version.ejb.plugin>2.5</version.ejb.plugin>
+		<maven-war-plugin.version>2.5</maven-war-plugin.version>
+		<version.surefire.plugin>2.10</version.surefire.plugin>
+		<!-- Application Specific -->
+		<vls.application.version>LTSW 1.70</vls.application.version>
+		<vls.application.date>${maven.build.timestamp}</vls.application.date>
+		<maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+
+			<dependency>
+				<groupId>javax.enterprise</groupId>
+				<artifactId>cdi-api</artifactId>
+				<version>${cdi.version}</version>
+			</dependency>
+
+			<!-- Apache poi -->
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>${apache.poi.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-core</artifactId>
+				<version>${org.springframework.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sun.faces</groupId>
+				<artifactId>jsf-api</artifactId>
+				<version>${com.sun.faces.jsf.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.sun.faces</groupId>
+				<artifactId>jsf-impl</artifactId>
+				<version>${com.sun.faces.jsf.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>javax.servlet-api</artifactId>
+				<version>${servlet.api.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>${mysql-connector-java.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.ntua.ote</groupId>
+				<artifactId>web</artifactId>
+				<version>${project.build.vesrion}</version>
+				<type>war</type>
+				<scope>compile</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>com.ntua.ote</groupId>
+				<artifactId>core</artifactId>
+				<version>${project.build.vesrion}</version>
+				<type>jar</type>
+			</dependency>
+
+			<dependency>
+				<groupId>com.ntua.ote</groupId>
+				<artifactId>persistence</artifactId>
+				<version>${project.build.vesrion}</version>
+				<type>jar</type>
+			</dependency>
+
+			<dependency>
+				<groupId>org.richfaces</groupId>
+				<artifactId>richfaces-bom</artifactId>
+				<version>${org.richfaces.bom.version}</version>
+				<type>pom</type>
+			</dependency>
+
+			<dependency>
+				<groupId>org.richfaces.ui</groupId>
+				<artifactId>richfaces-components-ui</artifactId>
+				<version>${org.richfaces.bom.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.richfaces.core</groupId>
+				<artifactId>richfaces-core-impl</artifactId>
+				<version>${org.richfaces.bom.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!-- The JBoss AS plugin deploys your ear to a local JBoss AS container -->
+				<!-- Due to Maven's lack of intelligence with EARs we need to configure 
+					the jboss-as maven plugin to skip deployment for all modules. We then enable 
+					it specifically in the ear module. -->
+				<plugin>
+					<groupId>org.jboss.as.plugins</groupId>
+					<artifactId>jboss-as-maven-plugin</artifactId>
+					<version>7.1.1.Final</version>
+					<inherited>true</inherited>
+					<configuration>
+						<skip>true</skip>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+</project>
