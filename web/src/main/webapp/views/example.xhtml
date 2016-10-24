@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:n="http://ntua/facelets"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="/templates/super.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="mw_results_panel" >
+
+			<p:dataTable id="table" value="#{welcomeController.logs}" var="log">
+
+				<p:column headerText="Caller">
+					<h:outputText value="#{log.phoneNumber}" />
+				</p:column>
+				
+				<p:column headerText="Callee">
+					<h:outputText value="#{log.externalPhoneNumber}" />
+				</p:column>
+				
+				<p:column headerText="Duration">
+					<h:outputText value="#{log.duration}" />
+				</p:column>
+				
+				<p:column headerText="Date">
+					<h:outputText value="#{log.dateTime}" >
+					 <f:convertDateTime dateStyle="long" timeZone="GMT+3" type="both"/>
+					</h:outputText>
+				</p:column>
+			</p:dataTable>
+
+			<h:panelGrid columns="1">
+				<p:commandButton value="Refresh" update="table"
+					action="#{welcomeController.increase}" />
+			</h:panelGrid>
+		</p:panel>
+	</ui:define>
+</ui:composition>
+</html>

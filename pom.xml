@@ -10,10 +10,10 @@
 	<name>A Logger Server</name>
 
 	<modules>
-		<module>web</module>
-		<module>ear</module>
 		<module>core</module>
 		<module>persistence</module>
+		<module>web</module>
+		<module>ear</module>
 	</modules>
 
 	<properties>
@@ -23,17 +23,21 @@
 		<java.target.compile.version>1.7</java.target.compile.version>
 
 		<org.springframework.version>4.1.4.RELEASE</org.springframework.version>
-		<org.richfaces.bom.version>4.3.7.Final</org.richfaces.bom.version>
+		<org.primefaces.version>5.3</org.primefaces.version>
 		<com.sun.faces.jsf.version>2.1.25</com.sun.faces.jsf.version>
 		<apache.poi.version>3.12-beta1</apache.poi.version>
 		<log4j.version>1.2.16</log4j.version>
 		<cdi.version>1.2</cdi.version>
 		<junit.version>4.12</junit.version>
-		<servlet.api.version>3.0.1</servlet.api.version>
+		<servlet.api.version>2.5</servlet.api.version>
+		<servlet.api.jstl.version>1.2</servlet.api.jstl.version>
 		<mysql-connector-java.version>5.1.39</mysql-connector-java.version>
+		<javaee-api.version>6.0</javaee-api.version>
+		<com.google.code.gson.version>2.7</com.google.code.gson.version>
+		<org.hibernate.version>4.3.11.Final</org.hibernate.version>
 		<!-- maven Plugins -->
 		<maven-jar-plugin.version>2.6</maven-jar-plugin.version>
-		<maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>
 		<maven-resources-plugin.version>2.6</maven-resources-plugin.version>
 		<version.ear.plugin>2.10</version.ear.plugin>
 		<version.ejb.plugin>2.5</version.ejb.plugin>
@@ -88,8 +92,20 @@
 
 			<dependency>
 				<groupId>javax.servlet</groupId>
-				<artifactId>javax.servlet-api</artifactId>
+				<artifactId>servlet-api</artifactId>
 				<version>${servlet.api.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>jstl</artifactId>
+				<version>${servlet.api.jstl.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>javax</groupId>
+				<artifactId>javaee-api</artifactId>
+				<version>${javaee-api.version}</version>
 			</dependency>
 
 			<dependency>
@@ -127,23 +143,23 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.richfaces</groupId>
-				<artifactId>richfaces-bom</artifactId>
-				<version>${org.richfaces.bom.version}</version>
-				<type>pom</type>
+				<groupId>org.primefaces</groupId>
+				<artifactId>primefaces</artifactId>
+				<version>${org.primefaces.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.richfaces.ui</groupId>
-				<artifactId>richfaces-components-ui</artifactId>
-				<version>${org.richfaces.bom.version}</version>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>${com.google.code.gson.version}</version>
 			</dependency>
 
 			<dependency>
-				<groupId>org.richfaces.core</groupId>
-				<artifactId>richfaces-core-impl</artifactId>
-				<version>${org.richfaces.bom.version}</version>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-entitymanager</artifactId>
+				<version>${org.hibernate.version}</version>
 			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 

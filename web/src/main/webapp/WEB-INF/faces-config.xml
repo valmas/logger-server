@@ -1,37 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
- 
-<faces-config
-    xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
-    version="2.1">
-    
-    <!-- 
-	<managed-bean>
-	    <managed-bean-name>dbForm</managed-bean-name>
-	    <managed-bean-class>com.ntua.db.DbForm</managed-bean-class>
-	    <managed-bean-scope>request</managed-bean-scope>
-	</managed-bean>
-	
-	<managed-bean>
-	    <managed-bean-name>jdbc</managed-bean-name>
-	    <managed-bean-class>com.ntua.db.JdbcBaseDao</managed-bean-class>
-	    <managed-bean-scope>request</managed-bean-scope>
-	</managed-bean>
-	
-	<managed-bean>
-	    <managed-bean-name>helloWorldBean</managed-bean-name>
-	    <managed-bean-class>com.ntua.db.HelloManagedBean</managed-bean-class>
-	    <managed-bean-scope>request</managed-bean-scope>
-	    <managed-property>
-	        <property-name>dbForm</property-name>
-	        <value>#{dbForm}</value>
-	    </managed-property>
-	    <managed-property>
-	        <property-name>jdbc</property-name>
-	        <value>#{jdbc}</value>
-	    </managed-property>
-	</managed-bean>
-  -->
+
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
+	version="2.1">
+
+	<application>
+		<resource-bundle>
+			<base-name>CommonMessages</base-name>
+			<var>bundle</var>
+		</resource-bundle>
+		<locale-config>
+			<default-locale>en</default-locale>
+		</locale-config>
+	</application>
+
+<!-- 	<converter>
+		<converter-for-class>org.joda.time.LocalDate</converter-for-class>
+		<converter-class>com.ntua.ote.server.logger.converters.LocalDateConverter</converter-class>
+	</converter>
+
+	<converter>
+		<converter-for-class>org.joda.time.LocalDateTime</converter-for-class>
+		<converter-class>com.ntua.ote.server.logger.converters.LocalDateTimeConverter</converter-class>
+	</converter> -->
+
 </faces-config>
  

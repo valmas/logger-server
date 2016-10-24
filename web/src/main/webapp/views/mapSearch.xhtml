@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" 
+	xmlns:n="http://ntua/facelets"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition template="/templates/super.xhtml">
+
+	<ui:define name="content">
+		<p:panel id="map_search_panel" >
+			<h:panelGrid columns="2">
+				<h:panelGrid columns="2">
+					
+					<n:input label="Phone number" value="#{mapController.searchCriteria.phoneNumber}"/>
+					
+					<n:input label="External Phone number" value="#{mapController.searchCriteria.externalPhoneNumber}"/>
+					
+					<n:selectOne label="Direction" value="#{mapController.searchCriteria.direction}" 
+						list="#{codelistController.directions}"/>
+				
+				</h:panelGrid>
+				
+				<h:panelGrid columns="2">
+					
+					<n:calendar label="Date from" value="#{mapController.searchCriteria.dateFrom}"
+						type="dateTime" />
+					
+					<n:calendar label="Date to" value="#{mapController.searchCriteria.dateTo}"
+						type="dateTime"/>
+					
+					<n:selectOne label="Type" value="#{mapController.searchCriteria.logType}"
+						list="#{codelistController.types}"/>
+				
+				</h:panelGrid>
+			</h:panelGrid>
+			<p:commandButton value="Search" update="map_results_panel"
+				action="#{mapController.search()}" />
+				
+			<p:commandButton value="Reset" update="map_results_panel map_search_panel"
+				action="#{mapController.reset()}" />
+				
+		</p:panel>
+	
+		<p:panel id="map_results_panel" >
+
+			<p:dataTable id="table" value="#{mapController.logs}" var="log" rendered="#{mapController.logs != null}" >
+
+				<p:column headerText="Phone number">
+					<h:outputText value="#{log.phoneNumber}" />
+				</p:column>
+				
+				<p:column headerText="External Phone number">
+					<h:outputText value="#{log.externalPhoneNumber}" />
+				</p:column>
+				
+				<p:column headerText="Duration">
+					<h:outputText value="#{log.duration}" />
+				</p:column>
+				
+				<p:column headerText="Date">
+					<h:outputText value="#{log.dateTime}" >
+					 <f:convertDateTime dateStyle="long" timeZone="GMT+3" type="both"/>
+					</h:outputText>
+				</p:column>
+			</p:dataTable>
+
+		</p:panel>
+	</ui:define>
+</ui:composition>
+</html>

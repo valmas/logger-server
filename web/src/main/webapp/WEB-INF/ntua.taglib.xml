@@ -5,7 +5,15 @@
 <facelet-taglib>
 	<namespace>http://ntua/facelets</namespace>
 	<tag>
-		<tag-name>operatorField</tag-name>
-		<source>../components/operatorField.xhtml</source>
+		<tag-name>input</tag-name>
+		<source>../components/input.xhtml</source>
+	</tag>
+	<tag>
+		<tag-name>calendar</tag-name>
+		<source>../components/calendar.xhtml</source>
+	</tag>
+	<tag>
+		<tag-name>selectOne</tag-name>
+		<source>../components/selectOne.xhtml</source>
 	</tag>
 </facelet-taglib>

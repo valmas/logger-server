@@ -1,28 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
-          http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-	version="3.0">
-	<display-name>dbProject</display-name>
-	<!-- for apache <listener> <listener-class>org.jboss.weld.environment.servlet.Listener</listener-class> 
-		</listener> -->
-	<servlet>
-		<servlet-name>faces</servlet-name>
-		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>faces</servlet-name>
-		<url-pattern>*.xhtml</url-pattern>
-	</servlet-mapping>
-
-	<context-param>
-		<param-name>facelets.LIBRARIES</param-name>
-		<param-value>/WEB-INF/ntua.taglib.xml</param-value>
-	</context-param>
-	
-	<welcome-file-list>
-		<welcome-file>/index.xhtml</welcome-file>
-	</welcome-file-list>
-
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+  <display-name>loggerProject</display-name>
+  <servlet>
+    <servlet-name>faces</servlet-name>
+    <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>faces</servlet-name>
+    <url-pattern>*.xhtml</url-pattern>
+  </servlet-mapping>
+  <context-param>
+    <param-name>javax.faces.CONFIG_FILES</param-name>
+    <param-value>
+    	/WEB-INF/faces-config.xml,
+    	/WEB-INF/faces-navigation.xml
+    	</param-value>
+  </context-param>
+  <session-config>
+    <session-timeout>30</session-timeout>
+  </session-config>
+  <context-param>
+    <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
+    <param-value>/WEB-INF/ntua.taglib.xml</param-value>
+  </context-param>
+  <welcome-file-list>
+    <welcome-file>/index.xhtml</welcome-file>
+  </welcome-file-list>
 </web-app>

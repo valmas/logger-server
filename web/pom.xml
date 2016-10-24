@@ -57,7 +57,13 @@
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
 			<scope>provided</scope>
 		</dependency>
 
@@ -68,15 +74,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.richfaces.ui</groupId>
-			<artifactId>richfaces-components-ui</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.richfaces.core</groupId>
-			<artifactId>richfaces-core-impl</artifactId>
-			<scope>provided</scope>
+			<groupId>org.primefaces</groupId>
+			<artifactId>primefaces</artifactId>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
@@ -89,6 +89,18 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <scope>provided</scope>
 		</dependency>
 
 	</dependencies>

@@ -1,22 +1,51 @@
-<!DOCTYPE html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:a4j="http://richfaces.org/a4j"
-    xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:n="http://ntua/facelets"
     xmlns:ui="http://java.sun.com/jsf/facelets">
-
+    
 <ui:composition template="/templates/super.xhtml">
-
-	<ui:define name="content">
-		<rich:panel id="mw_results_panel" header="Most wanted properties"> 
+<ui:define name="content">
+	<div id="header">
+		<div id="site_title">
+			<a href="#">Technology Blog - Free CSS Template</a>
+		</div>
+	</div>
+	<!-- end of header -->
+	<div id="menu_wrapper">
+		<div id="menu">
+			<ul>
+				<li><a href="#" class="current"><span></span>Home</a></li>
+				<li> <h:commandLink action="#{mapController.init()}" value="Map Search" />
+				</li>
+				<li><a href="#"><span></span>CSS Templates</a></li>
+				<li><a href="#"><span></span>Graphics</a></li>
+				<li><a href="#"><span></span>Inspirations</a></li>
+				<li><a href="#"><span></span>Flash Files</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="main">
+		<span class="tm_bottom"></span>
+		<div id="content">
 			
-			<h:panelGrid columns="1">
-				<h:outputText value="#{welcomeController.numberOfClicks}"/>
-				
-				<h:commandButton value="Increase" action="#{welcomeController.increase}"/>
-			</h:panelGrid>
-		</rich:panel>
+		</div>
+	</div>
+	<!-- end of bottom -->
+	<div id="footer">
+		<ul class="footer_menu">
+			<li class="first"><a href="#">Home</a></li>
+			<li><a href="#">Web 2.0</a></li>
+			<li><a href="#">Wordpress</a></li>
+			<li><a href="#">Graphics</a></li>
+			<li><a href="#">Inspirations</a></li>
+			<li><a href="#">Freebies</a></li>
+		</ul>
+		Copyright &copy; 2048 <a href="#">Your Company Name</a> | Designed by
+		<a target="_blank" rel="nofollow" href="http://www.templatemo.com/">templatemo</a>
+	</div>
 	</ui:define>
 </ui:composition>
 </html>

@@ -17,16 +17,19 @@
 			<groupId>com.ntua.ote</groupId>
 			<artifactId>web</artifactId>
 			<type>war</type>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.ntua.ote</groupId>
 			<artifactId>core</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		
 		<dependency>
 			<groupId>com.ntua.ote</groupId>
 			<artifactId>persistence</artifactId>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>
@@ -38,6 +41,25 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		    <scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.hibernate</groupId>
+		    <artifactId>hibernate-entitymanager</artifactId>
+		    <scope>compile</scope>
+		</dependency>
+		
+		<!-- Spring framework -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
 			<scope>compile</scope>
 		</dependency>
 		

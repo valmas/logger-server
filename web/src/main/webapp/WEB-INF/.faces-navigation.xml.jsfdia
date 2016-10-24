@@ -2,10 +2,19 @@
 <PROCESS model-entity="JSFProcess">
  <PROCESS-ITEM NAME="rules:*" PATH="*" SHAPE="32,17,0,0" model-entity="JSFProcessGroup">
   <PROCESS-ITEM ID="rules:*:0" NAME="item" PATH="*" model-entity="JSFProcessItem">
-   <PROCESS-ITEM-OUTPUT ID="home::index.xhtml" NAME="output"
-    PATH="index.xhtml" TARGET="rules:index.xhtml" TITLE="home" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="home::#index.xhtml" NAME="output"
+    PATH="/index.xhtml" TARGET="rules:#index.xhtml" TITLE="home" model-entity="JSFProcessItemOutput"/>
   </PROCESS-ITEM>
  </PROCESS-ITEM>
- <PROCESS-ITEM NAME="rules:index.xhtml" PATH="index.xhtml"
+ <PROCESS-ITEM NAME="rules:#index.xhtml" PATH="/index.xhtml"
   SHAPE="240,33,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:" SHAPE="32,129,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::0" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="mapSearch::#views#mapSearch.xhtml"
+    NAME="output" PATH="/views/mapSearch.xhtml"
+    TARGET="rules:#views#mapSearch.xhtml" TITLE="mapSearch" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#views#mapSearch.xhtml"
+  PATH="/views/mapSearch.xhtml" SHAPE="240,145,0,0" model-entity="JSFProcessGroup"/>
 </PROCESS>

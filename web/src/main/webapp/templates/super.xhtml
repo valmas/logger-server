@@ -2,14 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:a4j="http://richfaces.org/a4j"
-    xmlns:rich="http://richfaces.org/rich"
     xmlns:ui="http://java.sun.com/jsf/facelets">
 <f:view> 
 
 	<h:outputStylesheet library="css" name="style.css"  />
 <h:head>
-  <title>Ideal House</title>
+  <title>#{bundle['page.title']}</title>
   <meta http-equiv="content-type" content="text/html; charset=windows-1252" />
   <link rel="stylesheet" type="text/css" href="style/style.css" />
 </h:head>
@@ -19,9 +17,12 @@
     <h:form>
     <div id="content_header">
     	<h:messages errorStyle="color:red" />
+    	<h:link outcome="home">
+    		<h1>HOME</h1>
+    	</h:link>
     </div>
     <div id="site_content">
-      <div id="content">
+      <div id="content" style="width:100%">
       	<ui:insert name="content"></ui:insert>
         <!-- insert the page content here -->
       </div>

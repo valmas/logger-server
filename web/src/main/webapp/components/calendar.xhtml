@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:i="http://www.rich.prime/jsf"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<p:outputLabel value="#{label}" rendered="#{empty rendered ? 'true' : rendered}" />
+	
+	<c:choose>
+		<c:when test="#{empty type or type == 'date'}">
+			<p:calendar value="#{value}" rendered="#{empty rendered ? 'true' : rendered}" disabled="#{disabled}"
+				readonly="#{readonly}" effect="fold" showOn="button" pattern="dd-MM-yyyy"
+				required="#{required}" requiredMessage="#{label} #{bundle['validation.required']}" />
+		</c:when>
+		<c:when test="#{type == 'dateTime'}">
+			<p:calendar value="#{value}" rendered="#{empty rendered ? 'true' : rendered}" disabled="#{disabled}"
+				readonly="#{readonly}" effect="fold" showOn="button" pattern="dd/MM/yyyy HH:mm"
+				required="#{required}" requiredMessage="#{label} #{bundle['validation.required']}"/>
+		</c:when>
+		<c:otherwise>
+			<p:calendar value="#{value}" rendered="#{empty rendered ? 'true' : rendered}" disabled="#{disabled}"
+				readonly="#{readonly}" effect="fold" showOn="button" pattern="HH:mm" timeOnly="true"
+				required="#{required}" requiredMessage="#{label} #{bundle['validation.required']}"/>
+		</c:otherwise>
+
+	</c:choose>
+</ui:composition>
