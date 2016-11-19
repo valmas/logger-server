@@ -1,18 +1,12 @@
 package com.ntua.ote.logger.core.models;
 
-import java.io.Serializable;
-import java.text.DateFormat;
 import java.util.Date;
-
-import org.apache.log4j.Logger;
 
 import com.ntua.ote.logger.core.enums.Direction;
 import com.ntua.ote.logger.core.enums.LogType;
 
 public class LogDetails {
 	
-	private static final Logger LOGGER = Logger.getLogger(LogDetails.class);
-
 	private String phoneNumber;
 	
 	private String externalPhoneNumber;

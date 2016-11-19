@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.event.map.OverlaySelectEvent;
-import org.primefaces.event.map.ReverseGeocodeEvent;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
@@ -24,6 +23,8 @@ import com.ntua.ote.logger.persistence.LoggerDAOImpl;
 @SessionScoped
 public class MapController implements Serializable {
 	
+	private static final long serialVersionUID = 2208902766742258519L;
+
 	@Inject
 	private LoggerDAOImpl dao;
 

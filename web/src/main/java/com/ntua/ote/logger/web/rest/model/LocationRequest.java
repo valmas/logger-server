@@ -1,16 +1,6 @@
 package com.ntua.ote.logger.web.rest.model;
 
-import java.text.DateFormat;
-
-import org.apache.log4j.Logger;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.ntua.ote.logger.core.models.LogDetails;
-
 public class LocationRequest {
-
-	private static final Logger LOGGER = Logger.getLogger(LocationRequest.class);
 
 	private long rowId;
 	private double latitude;

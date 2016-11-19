@@ -2,15 +2,11 @@ package com.ntua.ote.logger.web.rest.model;
 
 import java.util.Date;
 
-import org.apache.log4j.Logger;
 import com.ntua.ote.logger.core.enums.Direction;
 import com.ntua.ote.logger.core.enums.LogType;
-import com.ntua.ote.logger.core.models.LogDetails;
 
 public class InitialRequest {
 
-	private static final Logger LOGGER = Logger.getLogger(InitialRequest.class);
-	
 	private String brandModel;
 	
 	private String version;

@@ -1,6 +1,5 @@
 package com.ntua.ote.logger.persistence.jpa;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;

@@ -7,15 +7,11 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
@@ -91,7 +87,9 @@ public class LoggerDAOImpl implements LoggerDAO {
 	
 	public List<LogDetails> getLogDetails() {
 		try {
-			List<Log> logs = entityManager.createQuery("SELECT l FROM Log l").getResultList();
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Log> query = cb.createQuery(Log.class);
+			List<Log> logs = entityManager.createQuery(query).getResultList();
 			return convertLog(logs);
 		} catch (Exception e) {
 			LOGGER.error("<updateDuration> :", e);
