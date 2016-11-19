@@ -1,5 +1,6 @@
 package com.ntua.ote.logger.core.models;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class SearchCriteria {
@@ -15,6 +16,12 @@ public class SearchCriteria {
 	private String direction;
 	
 	private String logType;
+	
+	private BigDecimal longitude;
+	
+	private BigDecimal latitude;
+	
+	private int radius;
 
 	public String getPhoneNumber() {
 		return phoneNumber;
@@ -63,4 +70,29 @@ public class SearchCriteria {
 	public void setLogType(String logType) {
 		this.logType = logType;
 	}
+
+	public BigDecimal getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(BigDecimal longitude) {
+		this.longitude = longitude;
+	}
+
+	public BigDecimal getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(BigDecimal latitude) {
+		this.latitude = latitude;
+	}
+
+	public int getRadius() {
+		return radius;
+	}
+
+	public void setRadius(int radius) {
+		this.radius = radius;
+	}
+	
 }

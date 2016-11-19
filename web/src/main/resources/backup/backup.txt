@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile=gmaps4jsf-core-3.0.0.jar -DgroupId=com.googlecode.gmaps4jsf -DartifactId=gmaps4jsf-core -Dversion=3.0.0 -Dpackaging=jar -DgeneratePom=true

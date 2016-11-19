@@ -20,6 +20,7 @@ import javax.persistence.metamodel.Metamodel;
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
+import com.ntua.ote.logger.core.common.Utils;
 import com.ntua.ote.logger.core.enums.Direction;
 import com.ntua.ote.logger.core.enums.LogType;
 import com.ntua.ote.logger.core.models.LogDetails;
@@ -122,6 +123,16 @@ public class LoggerDAOImpl implements LoggerDAO {
 			if(StringUtils.hasText(searchCriteria.getLogType())) {
 				predicates.add(cb.equal(sm.get(Log_.logType), LogType.valueOf(searchCriteria.getLogType().toUpperCase())));
 			}
+			if(searchCriteria.getLongitude() != null && searchCriteria.getLatitude() != null && searchCriteria.getRadius() > 0) {
+				double[] diffLatLng = Utils.calculateLatLngFromRadius(searchCriteria.getRadius(), searchCriteria.getLatitude().doubleValue(), 
+						searchCriteria.getLongitude().doubleValue());
+				
+				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.latitude), searchCriteria.getLatitude().doubleValue() - diffLatLng[0]));
+				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.latitude), searchCriteria.getLatitude().doubleValue() + diffLatLng[0]));
+				
+				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.longitude), searchCriteria.getLongitude().doubleValue() - diffLatLng[1]));
+				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.longitude), searchCriteria.getLongitude().doubleValue() + diffLatLng[1]));
+			}
 			if(!predicates.isEmpty()) {
 				Predicate andClause = cb.and(predicates.toArray(new Predicate[predicates.size()]));
 				query.where(andClause);
@@ -142,9 +153,23 @@ public class LoggerDAOImpl implements LoggerDAO {
 			logDetail.setDateTime(new Date(log.getDateTime().getTime()));
 			logDetail.setExternalPhoneNumber(log.getExtPhoneNumber());
 			logDetail.setPhoneNumber(log.getPhoneNumber());
-			logDetail.setDuration(log.getDuration());
+			logDetail.setDuration(Utils.timeToString(log.getDuration()));
 			logDetail.setLatitude(log.getLatitude());
 			logDetail.setLongitude(log.getLongitude());
+			logDetail.setBrandModel(log.getBrandModel());
+			logDetail.setVersion(log.getVersion());
+			logDetail.setCellId(log.getCellId());
+			logDetail.setDirection(log.getDirection());
+			logDetail.setImei(log.getImei());
+			logDetail.setImsi(log.getImsi());
+			logDetail.setLac(log.getLac());
+			logDetail.setLogType(log.getLogType());
+			logDetail.setLteCQI(log.getLteCQI());
+			logDetail.setLteRSRP(log.getLteRSRP());
+			logDetail.setLteRSRQ(log.getLteRSRQ());
+			logDetail.setLteRSSNR(log.getLteRSSNR());
+			logDetail.setRssi(log.getRssi());
+			logDetail.setRat(log.getRat());
 			logDetails.add(logDetail);
 		}
 		return logDetails;

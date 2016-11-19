@@ -4,13 +4,20 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui" 
 	xmlns:n="http://ntua/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <ui:composition template="/templates/super.xhtml">
+	
+	<ui:define name="head">
+        <script type="text/javascript"
+                src="http://maps.google.com/maps/api/js?key=AIzaSyDgwKpTAu0MFK-0Y35YEGVCIthTTKXLpaE"/>
+    </ui:define>
+    
 
 	<ui:define name="content">
 		<p:panel id="map_search_panel" >
-			<h:panelGrid columns="2">
+			<h:panelGrid columns="3">
 				<h:panelGrid columns="2">
 					
 					<n:input label="Phone number" value="#{mapController.searchCriteria.phoneNumber}"/>
@@ -34,39 +41,98 @@
 						list="#{codelistController.types}"/>
 				
 				</h:panelGrid>
+				
+				<h:panelGrid columns="2">
+					
+					<n:input label="Latitude center" value="#{mapController.searchCriteria.latitude}"/>
+					
+					<n:input label="Longitude center" value="#{mapController.searchCriteria.longitude}"/>
+					
+					<n:input label="Radius (meters)" value="#{mapController.searchCriteria.radius}"/>
+					
+					<p:commandButton icon="fa fa-search" oncomplete="PF('locationPopup').show();"/>
+				
+				</h:panelGrid>
 			</h:panelGrid>
-			<p:commandButton value="Search" update="map_results_panel"
-				action="#{mapController.search()}" />
+			<p:commandButton value="Search" update="map_results_panel map"
+				action="#{mapController.search()}"/>
 				
 			<p:commandButton value="Reset" update="map_results_panel map_search_panel"
 				action="#{mapController.reset()}" />
 				
 		</p:panel>
+		
+		<h:panelGrid id="map_results_panel" columns="2" columnClasses="map_panel_left,map_panel_right" width="100%">
 	
-		<p:panel id="map_results_panel" >
+			<h:panelGroup id="map">
+				<p:gmap  id="gmap" center="#{mapController.mapCenter}" zoom="13" widgetVar="widgetMap" 
+					rendered="#{not empty mapController.logs}" style="width:100%;height:700px"
+					type="ROADMAP" model="#{mapController.advancedModel}">
+	 
+			        <p:ajax event="overlaySelect" listener="#{mapController.onMarkerSelect}" 
+			        	oncomplete="reverseGeocode()" update="contentForm:lat contentForm:lng table"/>
+			 
+			        <p:gmapInfoWindow id="infoWindow" >
+			           <h:panelGrid columns="2" columnClasses="none,alignTop">
+			            <p:outputPanel style="text-align: center; display: block; margin: auto">			            	
+			            	
+		            		<h:panelGroup>
+		            		
+		                    	<n:callSmsDirection log="#{mapController.selectedLog}"/>
+	                    		<br/>
+	                    		<h:outputText value="#{mapController.selectedLog.dateTime}" >
+								 	<f:convertDateTime dateStyle="long" timeZone="GMT+3" type="both"/>
+								</h:outputText>
+	                    		<br/>
+	                    		<h:outputText id="location" />
+	                   		</h:panelGroup>
+														
+			            </p:outputPanel>
+						<p:commandLink style="float:right" 
+							oncomplete="PF('popup').show();" update="contentForm:infoPopup" >
+							<i class="fa fa-info-circle"/>
+						</p:commandLink>
+			            </h:panelGrid>
+			        </p:gmapInfoWindow>
+			    </p:gmap>
+			    
+			    <h:inputHidden id="lat" value="#{mapController.latitude}" />
+				<h:inputHidden id="lng" value="#{mapController.longitude}" />
+			  	
+	        </h:panelGroup>
+	        
+			<p:dataTable id="table" value="#{mapController.logs}" var="log" rendered="#{mapController.logs != null}" scrollable="true"  
+				selectionMode="single" selection="#{mapController.selectedLog}" rowKey="#{log}" scrollHeight="700" 
+				disabledSelection="#{!log.mapable}">
 
-			<p:dataTable id="table" value="#{mapController.logs}" var="log" rendered="#{mapController.logs != null}" >
+				<p:column headerText="" style="border-right-style: none;">
+					<h:panelGrid columns="3" columnClasses="noTableMarker,noTable,noTableButton">
+						<h:panelGroup>
+							<p:outputPanel rendered="#{log.mapable}">
+								<i class="fa fa-map-marker"/>
+							</p:outputPanel>
+						</h:panelGroup>
+						<h:panelGroup>
+							<n:callSmsDirection log="#{log}"/>
+							<br/>
+							<h:outputText value="#{log.dateTime}" >
+							 <f:convertDateTime dateStyle="long" timeZone="GMT+3" type="both"/>
+							</h:outputText>
+						</h:panelGroup>
+						<p:commandButton style="float:right" icon="fa fa-info-circle" action="#{mapController.setSelectedLog(log)}" 
+							oncomplete="PF('popup').show();" update="contentForm:infoPopup" /> 
+					</h:panelGrid>
+				</p:column>
+				
+				<p:ajax event="rowSelect" update="contentForm:gmap" listener="#{mapController.selectMarker()}"/>
 
-				<p:column headerText="Phone number">
-					<h:outputText value="#{log.phoneNumber}" />
-				</p:column>
-				
-				<p:column headerText="External Phone number">
-					<h:outputText value="#{log.externalPhoneNumber}" />
-				</p:column>
-				
-				<p:column headerText="Duration">
-					<h:outputText value="#{log.duration}" />
-				</p:column>
-				
-				<p:column headerText="Date">
-					<h:outputText value="#{log.dateTime}" >
-					 <f:convertDateTime dateStyle="long" timeZone="GMT+3" type="both"/>
-					</h:outputText>
-				</p:column>
 			</p:dataTable>
-
-		</p:panel>
+        </h:panelGrid>
+        
+        <n:locationFinderPopup value="#{mapController.searchCriteria}"/>
+        
+        <n:logInfoPopup value="#{mapController.selectedLog}"/>
+        
 	</ui:define>
 </ui:composition>
 </html>

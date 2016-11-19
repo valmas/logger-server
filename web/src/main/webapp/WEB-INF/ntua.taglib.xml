@@ -16,4 +16,20 @@
 		<tag-name>selectOne</tag-name>
 		<source>../components/selectOne.xhtml</source>
 	</tag>
+	<tag>
+		<tag-name>twoLabels</tag-name>
+		<source>../components/twoLabels.xhtml</source>
+	</tag>
+	<tag>
+		<tag-name>callSmsDirection</tag-name>
+		<source>../components/callSmsDirection.xhtml</source>
+	</tag>
+	<tag>
+		<tag-name>logInfoPopup</tag-name>
+		<source>../components/logInfoPopup.xhtml</source>
+	</tag>
+	<tag>
+		<tag-name>locationFinderPopup</tag-name>
+		<source>../components/locationFinderPopup.xhtml</source>
+	</tag>
 </facelet-taglib>

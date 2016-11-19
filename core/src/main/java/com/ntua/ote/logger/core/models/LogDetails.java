@@ -6,6 +6,9 @@ import java.util.Date;
 
 import org.apache.log4j.Logger;
 
+import com.ntua.ote.logger.core.enums.Direction;
+import com.ntua.ote.logger.core.enums.LogType;
+
 public class LogDetails {
 	
 	private static final Logger LOGGER = Logger.getLogger(LogDetails.class);
@@ -14,7 +17,7 @@ public class LogDetails {
 	
 	private String externalPhoneNumber;
 	
-	private int duration;
+	private String duration;
 	
 	private Date dateTime;
 	
@@ -23,6 +26,34 @@ public class LogDetails {
 	private double latitude;
 	
 	private double longitude;
+	
+	private String brandModel;
+	
+	private String version;
+	
+	private String imei;
+	
+	private String imsi;	
+	
+	private Direction direction;
+	
+	private int cellId;
+	
+	private int lac;
+	
+	private String rat;
+	
+	private int rssi;
+	
+	private String lteRSRP;
+	
+	private String lteRSRQ;
+	
+	private String lteRSSNR;
+	
+	private String lteCQI;
+	
+	private LogType logType;
 
 	public String getPhoneNumber() {
 		return phoneNumber;
@@ -40,11 +71,11 @@ public class LogDetails {
 		this.externalPhoneNumber = externalPhoneNumber;
 	}
 
-	public int getDuration() {
+	public String getDuration() {
 		return duration;
 	}
 
-	public void setDuration(int duration) {
+	public void setDuration(String duration) {
 		this.duration = duration;
 	}
 
@@ -78,6 +109,122 @@ public class LogDetails {
 
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
+	}
+
+	public String getBrandModel() {
+		return brandModel;
+	}
+
+	public void setBrandModel(String brandModel) {
+		this.brandModel = brandModel;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getImei() {
+		return imei;
+	}
+
+	public void setImei(String imei) {
+		this.imei = imei;
+	}
+
+	public String getImsi() {
+		return imsi;
+	}
+
+	public void setImsi(String imsi) {
+		this.imsi = imsi;
+	}
+
+	public Direction getDirection() {
+		return direction;
+	}
+
+	public void setDirection(Direction direction) {
+		this.direction = direction;
+	}
+
+	public int getCellId() {
+		return cellId;
+	}
+
+	public void setCellId(int cellId) {
+		this.cellId = cellId;
+	}
+
+	public int getLac() {
+		return lac;
+	}
+
+	public void setLac(int lac) {
+		this.lac = lac;
+	}
+
+	public String getRat() {
+		return rat;
+	}
+
+	public void setRat(String rat) {
+		this.rat = rat;
+	}
+
+	public int getRssi() {
+		return rssi;
+	}
+
+	public void setRssi(int rssi) {
+		this.rssi = rssi;
+	}
+
+	public String getLteRSRP() {
+		return lteRSRP;
+	}
+
+	public void setLteRSRP(String lteRSRP) {
+		this.lteRSRP = lteRSRP;
+	}
+
+	public String getLteRSRQ() {
+		return lteRSRQ;
+	}
+
+	public void setLteRSRQ(String lteRSRQ) {
+		this.lteRSRQ = lteRSRQ;
+	}
+
+	public String getLteRSSNR() {
+		return lteRSSNR;
+	}
+
+	public void setLteRSSNR(String lteRSSNR) {
+		this.lteRSSNR = lteRSSNR;
+	}
+
+	public String getLteCQI() {
+		return lteCQI;
+	}
+
+	public void setLteCQI(String lteCQI) {
+		this.lteCQI = lteCQI;
+	}
+
+	public LogType getLogType() {
+		return logType;
+	}
+
+	public void setLogType(LogType logType) {
+		this.logType = logType;
+	}
+	
+	public boolean isMapable(){
+		return (longitude != 0 && latitude != 0);
 	}
 	
 }
