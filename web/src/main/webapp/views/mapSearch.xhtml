@@ -16,7 +16,9 @@
     
 
 	<ui:define name="content">
-		<p:panel id="map_search_panel" >
+
+		<p:panel id="map_search_panel" toggleSpeed="500" toggleable="true" widgetVar="panel" 
+			style="position:absolute; z-index:2; top: 90px; padding: 0; width:99%">
 			<h:panelGrid columns="3">
 				<h:panelGrid columns="2">
 					
@@ -42,31 +44,40 @@
 				
 				</h:panelGrid>
 				
-				<h:panelGrid columns="2">
-					
-					<n:input label="Latitude center" value="#{mapController.searchCriteria.latitude}"/>
-					
-					<n:input label="Longitude center" value="#{mapController.searchCriteria.longitude}"/>
-					
-					<n:input label="Radius (meters)" value="#{mapController.searchCriteria.radius}"/>
-					
-					<p:commandButton icon="fa fa-search" oncomplete="PF('locationPopup').show();"/>
-				
-				</h:panelGrid>
+				<h:panelGroup>
+					<h:panelGrid columns="2">
+						<h:panelGrid columns="2">
+							
+							<n:input label="Latitude center" value="#{mapController.searchCriteria.latitude}"/>
+							
+							<n:input label="Longitude center" value="#{mapController.searchCriteria.longitude}"/>
+							
+							<n:input label="Radius (meters)" value="#{mapController.searchCriteria.radius}"/>
+						
+						</h:panelGrid>
+						
+						<p:commandButton icon="fa fa-search" oncomplete="PF('locationPopup').show();" style="height: 90px;"/>
+					</h:panelGrid>
+				</h:panelGroup>
 			</h:panelGrid>
 			<p:commandButton value="Search" update="map_results_panel map"
-				action="#{mapController.search()}"/>
+				action="#{mapController.search()}" oncomplete="PF('panel').toggle()"/>
 				
 			<p:commandButton value="Reset" update="map_results_panel map_search_panel"
 				action="#{mapController.reset()}" />
+			
+			<f:facet name="header">
+				<p:outputLabel style="width:100%; text-align:center" value="Search Criteria" onclick="PF('panel').toggle()"/>
+	        </f:facet>
 				
 		</p:panel>
 		
-		<h:panelGrid id="map_results_panel" columns="2" columnClasses="map_panel_left,map_panel_right" width="100%">
+		<h:panelGrid id="map_results_panel" columns="2" style="margin-top:60px; z-index:1" 
+			columnClasses="map_panel_left,map_panel_right" width="100%">
 	
 			<h:panelGroup id="map">
 				<p:gmap  id="gmap" center="#{mapController.mapCenter}" zoom="13" widgetVar="widgetMap" 
-					rendered="#{not empty mapController.logs}" style="width:100%;height:700px"
+					rendered="#{not empty mapController.logs}" style="width:100%;height:80vh"
 					type="ROADMAP" model="#{mapController.advancedModel}">
 	 
 			        <p:ajax event="overlaySelect" listener="#{mapController.onMarkerSelect}" 
@@ -102,8 +113,8 @@
 	        </h:panelGroup>
 	        
 			<p:dataTable id="table" value="#{mapController.logs}" var="log" rendered="#{mapController.logs != null}" scrollable="true"  
-				selectionMode="single" selection="#{mapController.selectedLog}" rowKey="#{log}" scrollHeight="700" 
-				disabledSelection="#{!log.mapable}">
+				selectionMode="single" selection="#{mapController.selectedLog}" rowKey="#{log}" scrollHeight="550" 
+				disabledSelection="#{!log.mapable}" styleClass="datatable-no-header">
 
 				<p:column headerText="" style="border-right-style: none;">
 					<h:panelGrid columns="3" columnClasses="noTableMarker,noTable,noTableButton">
@@ -128,6 +139,7 @@
 
 			</p:dataTable>
         </h:panelGrid>
+		
         
         <n:locationFinderPopup value="#{mapController.searchCriteria}"/>
         

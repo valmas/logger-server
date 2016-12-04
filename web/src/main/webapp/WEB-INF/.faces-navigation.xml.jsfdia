@@ -17,4 +17,13 @@
  </PROCESS-ITEM>
  <PROCESS-ITEM NAME="rules:#views#mapSearch.xhtml"
   PATH="/views/mapSearch.xhtml" SHAPE="240,145,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules::1" SHAPE="32,241,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::1" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="pathSearch::#views#pathSearch.xhtml"
+    NAME="output" PATH="/views/pathSearch.xhtml"
+    TARGET="rules:#views#pathSearch.xhtml" TITLE="pathSearch" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#views#pathSearch.xhtml"
+  PATH="/views/pathSearch.xhtml" SHAPE="240,257,0,0" model-entity="JSFProcessGroup"/>
 </PROCESS>

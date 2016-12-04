@@ -8,32 +8,41 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:n="http://ntua/facelets">
 	
-	<p:dialog id="locationPopup" header="Select location" widgetVar="locationPopup" showEffect="explode" 
-       	modal="true" hideEffect="explode" onShow="initMap();">
+	<p:dialog id="locationPopup" header="Select location" widgetVar="locationPopup" modal="true" onShow="initMap();">
+       	<h:panelGrid columns="2" style="height:100%" columnClasses="none, locationFinderHeader">
        	
-       	<h:panelGrid id="locationFinderValues" columns="2" columnClasses="locationFinderHeader, locationFinderHeader">
-       		<p:outputLabel value="Center" style="font-weight:bold"/>
+       		<div id="locMap" style="width: 800px; height: 600px"/>
        		
-       		<p:outputLabel value="Radius (meters)" style="font-weight:bold"/>
-       		
-        	<h:panelGroup>
-	        	<p:outputLabel value="Latitude:" style="font-weight:bold; margin-right:5px"/>
-	        	<h:outputLabel id="center_lat" style="margin-right:10px"/>
-	        	<p:outputLabel value="Longitude:" style="font-weight:bold; margin-right:5px"/>
-	        	<h:outputLabel id="center_lon" style="margin-right:10px"/>
-        	</h:panelGroup>
-        	
-        	<h:outputLabel id="radius" value="#{mapController.searchCriteria.radius}"/>
-        	
-       	</h:panelGrid>
-       	
-       	<h:inputHidden id="center_lat_hidden" value="#{value.latitude}" />
-       	<h:inputHidden id="center_lon_hidden" value="#{value.longitude}" />
-       	<h:inputHidden id="radius_hidden" value="#{value.radius}" />
-       	
-      		<p:commandButton style="float:right" value="OK" update="map_search_panel"
-			oncomplete="PF('locationPopup').hide();" process="center_lat_hidden,center_lon_hidden,radius_hidden" />
-			
-      		<div id="locMap" style="width: 800px; height: 600px"/>
+	       	<h:panelGrid id="locationFinderValues" columns="1" style="margin-left:10px; height:100%" 
+	       		columnClasses="locationFinderFixedHeight" rowClasses="none, none, none, none, none, none, none, locationFinderOkButton">
+	       		<p:outputLabel value="Center" style="font-weight:bold; "/>	
+	       		
+	        	<p:outputLabel value="Latitude:" style="font-weight:bold; margin-left:5px;"/>
+	        	<h:outputLabel id="center_lat" style="margin-right:10px; margin-left:5px;"/>
+	        	<p:outputLabel value="Longitude:" style="font-weight:bold; margin-left:5px;"/>
+	        	<h:outputLabel id="center_lon" style="margin-right:10px; margin-left:5px;"/>
+
+	        	<p:outputLabel value="Radius (meters)" style="font-weight:bold; margin-top:10px"/>
+	        	
+	        	<h:outputLabel id="radius" value="#{mapController.searchCriteria.radius}"/>
+	        	
+	        	<p:commandButton id="ok_btn" style="float:right" value="OK" update="map_search_panel" widgetVar="ok_loc_btn"
+					oncomplete="PF('locationPopup').hide();" process="center_lat_hidden,center_lon_hidden,radius_hidden" />
+	        	
+	        	<h:panelGroup>
+	        		<i class="fa fa-question-circle"/>
+	        		<h:outputText style="margin-left:5px" value="How to use" />
+	        		<br/>
+	        		<h:outputText value="Left click to select center" />
+	        		<br/>
+	        		<h:outputText value="Right click to select radius" />
+	        	</h:panelGroup>
+	       	</h:panelGrid>
+	       	
+	       	<h:inputHidden id="center_lat_hidden" value="#{value.latitude}" />
+	       	<h:inputHidden id="center_lon_hidden" value="#{value.longitude}" />
+	       	<h:inputHidden id="radius_hidden" value="#{value.radius}" />
+
+      	</h:panelGrid>
 	</p:dialog>
 </ui:composition>

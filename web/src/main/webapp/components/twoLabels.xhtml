@@ -15,6 +15,10 @@
 				<f:convertDateTime dateStyle="long" timeZone="GMT+3" type="both"/>
 			</p:outputLabel>
 		</c:when>
+		<c:when test="#{text}">
+			<p:inputTextarea readonly="true" rows="2" cols="40" value="#{value}" autoResize="false"
+				rendered="#{rendered != null ? rendered : true}" scrollHeight="1"/>
+		</c:when>
 		<c:otherwise>
 			<p:outputLabel value="#{value}" rendered="#{rendered != null ? rendered : true}"/>
 		</c:otherwise>

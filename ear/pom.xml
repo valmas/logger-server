@@ -41,26 +41,26 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		
 		<dependency>
 		    <groupId>com.google.code.gson</groupId>
 		    <artifactId>gson</artifactId>
-		    <scope>compile</scope>
+		    <scope>provided</scope>
 		</dependency>
 		
 		<dependency>
 		    <groupId>org.hibernate</groupId>
 		    <artifactId>hibernate-entitymanager</artifactId>
-		    <scope>compile</scope>
+		    <scope>provided</scope>
 		</dependency>
 		
 		<!-- Spring framework -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		
 	</dependencies>

@@ -3,6 +3,13 @@ var markerRadius;
 var map;
 
 function initMap() {
+	document.getElementById('contentForm:radius').innerHTML = ' ';
+	document.getElementById('contentForm:center_lat').innerHTML = ' ';
+	document.getElementById('contentForm:center_lon').innerHTML = ' ';
+	markerCenter = null;
+	markerRadius = null;
+	document.getElementById('contentForm:ok_btn').style.display = 'none';
+	
     // Create a map object and specify the DOM element for display.
     map = new google.maps.Map(document.getElementById('locMap'), {
       center: {lat: 0, lng: 0},
@@ -26,9 +33,10 @@ function placeCenter(location) {
 			markerRadius.setMap(null);
 			markerRadius = null;
 		}
-		document.getElementById('contentForm:radius').innerHTML = '';
+		document.getElementById('contentForm:radius').innerHTML = '0';
 		document.getElementById('contentForm:radius_hidden').value = '';
 	} 
+	PF('ok_loc_btn').disabled = true;
 	markerCenter = new google.maps.Marker({
 		position: location, 
 		map: map,
@@ -40,6 +48,7 @@ function placeCenter(location) {
 	document.getElementById('contentForm:center_lat_hidden').value = location.lat();
 	document.getElementById('contentForm:center_lon_hidden').value = location.lng();
 	
+	document.getElementById('contentForm:ok_btn').style.display = 'none';
 }
 
 function placeCircle(location) {
@@ -68,6 +77,8 @@ function placeCircle(location) {
 		
 		document.getElementById('contentForm:radius').innerHTML = radius;
 		document.getElementById('contentForm:radius_hidden').value = radius;
+		
+		document.getElementById('contentForm:ok_btn').style.display = 'block';
 	}
 }
 
@@ -94,20 +105,22 @@ function openInfoWindow() {
 function reverseGeocode(){
 	var lat =  document.getElementById("contentForm:lat").value;
 	var lng =  document.getElementById("contentForm:lng").value;
-	var geocoder = new google.maps.Geocoder;
-	var latlng = {lat: parseFloat(lat), lng: parseFloat(lng)};
-    geocoder.geocode({'location': latlng}, function(results, status) {
-      if (status === 'OK') {
-        if (results[1]) {
-          document.getElementById("contentForm:location").innerHTML = results[1].formatted_address;
-          //alert(results[1].formatted_address);
-        } else {
-          window.alert('No results found');
-        }
-      } else {
-        window.alert('Geocoder failed due to: ' + status);
-      }
-    });
+	if(lat != "" && lng != "") {
+		var geocoder = new google.maps.Geocoder;
+		var latlng = {lat: parseFloat(lat), lng: parseFloat(lng)};
+	    geocoder.geocode({'location': latlng}, function(results, status) {
+	      if (status === 'OK') {
+	        if (results[1]) {
+	          document.getElementById("contentForm:location").innerHTML = results[1].formatted_address;
+	          //alert(results[1].formatted_address);
+	        } else {
+	          window.alert('No results found');
+	        }
+	      } else {
+	        window.alert('Geocoder failed due to: ' + status);
+	      }
+	    });
+	}
 }
 
 function measure(lat1, lon1, lat2, lon2){  // generally used geo measurement function

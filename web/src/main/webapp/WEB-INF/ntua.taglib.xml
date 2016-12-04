@@ -32,4 +32,14 @@
 		<tag-name>locationFinderPopup</tag-name>
 		<source>../components/locationFinderPopup.xhtml</source>
 	</tag>
+	<tag>
+		<tag-name>manyInputSelect</tag-name>
+		<source>../components/manyInputSelect.xhtml</source>
+	</tag>
+	
+	<function>
+		<function-name>optionalRequiredValidator</function-name>
+		<function-class>com.ntua.ote.logger.web.common.FacesUtil</function-class>
+		<function-signature>boolean optionalRequiredValidator()</function-signature>
+	</function>
 </facelet-taglib>

@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:i="http://www.rich.prime/jsf"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:n="http://ntua/facelets">
+	
+	<p:outputLabel value="#{label}" />
+	
+	<h:panelGroup>
+		<p:inputText id="many_select_input" value="#{databean.input}"
+			size="20" required="#{empty databean.inputs and empty databean.input and n:optionalRequiredValidator()}" 
+			requiredMessage="Please provide at least one phone number"/>
+	
+		<p:commandButton style="float:right" icon="fa fa-plus" action="#{databean.add()}" 
+			update="data_list many_select_input" /> 
+	</h:panelGroup>
+	
+	<p:spacer width="1"/>
+	
+	<p:dataList id="data_list" value="#{databean.inputs}" var="item" type="unordered" itemType="none"
+		emptyMessage="No phone numbers selected.">
+		<p:spacer width="30" height="8" style="background-color: #{item.color}; margin-bottom: 1px;"/>
+        <h:outputText value="#{item.input}" style="margin-left:5px"/>
+        <p:commandLink style="float:right; margin-right:10px" action="#{databean.remove(item)}" update="data_list">
+			<i class="fa fa-remove"/>
+		</p:commandLink>
+    </p:dataList>
+	
+</ui:composition>

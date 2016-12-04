@@ -1,9 +1,11 @@
 .map_panel_left {
 	width: 75%;
+	vertical-align: top;
 }
 
 .map_panel_right {
 	width: 25%;
+	vertical-align: top;
 }
 
 .ui-widget {
@@ -40,5 +42,24 @@
 }
 
 .locationFinderHeader {
-	text-align: center
+	vertical-align: baseline;
+}
+
+.locationFinderFixedHeight {
+	vertical-align: baseline;
+	height:20px;
+}
+
+.locationFinderOkButton {
+	height: 100%;
+}
+
+.datatable-no-header thead {
+	display: none;
+}
+
+.ui-datalist-nobullets {
+	margin-top: 5px;
+	padding-left: 10px;
+	margin-bottom: 5px;
 }

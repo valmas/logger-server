@@ -130,7 +130,41 @@ public class LoggerDAOImpl implements LoggerDAO {
 				
 				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.longitude), searchCriteria.getLongitude().doubleValue() - diffLatLng[1]));
 				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.longitude), searchCriteria.getLongitude().doubleValue() + diffLatLng[1]));
+				
+				predicates.add(cb.notEqual(sm.get(Log_.latitude), 0));		
+				predicates.add(cb.notEqual(sm.get(Log_.longitude), 0));
 			}
+			if(!predicates.isEmpty()) {
+				Predicate andClause = cb.and(predicates.toArray(new Predicate[predicates.size()]));
+				query.where(andClause);
+			}
+			
+			List<Log> logs = entityManager.createQuery(query).getResultList();
+			return convertLog(logs);
+		} catch (Exception e) {
+			LOGGER.error("<search> :", e);
+			return null;
+		}
+	}
+	
+	public List<LogDetails> searchPath(SearchCriteria searchCriteria) {
+		try {
+			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+			CriteriaQuery<Log> query = cb.createQuery(Log.class);
+			Root<Log> sm = query.from(Log.class);
+			List<Predicate> predicates = new ArrayList<>();
+			if(StringUtils.hasText(searchCriteria.getPhoneNumber())) {
+				predicates.add(cb.equal(sm.get(Log_.phoneNumber), searchCriteria.getPhoneNumber()));
+			}
+			if(searchCriteria.getDateFrom() != null) {
+				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.dateTime), new Timestamp(searchCriteria.getDateFrom().getTime())));			
+			}
+			if(searchCriteria.getDateTo() != null) {
+				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.dateTime), new Timestamp(searchCriteria.getDateTo().getTime())));			
+			}
+			predicates.add(cb.notEqual(sm.get(Log_.latitude), 0));		
+			predicates.add(cb.notEqual(sm.get(Log_.longitude), 0));
+
 			if(!predicates.isEmpty()) {
 				Predicate andClause = cb.and(predicates.toArray(new Predicate[predicates.size()]));
 				query.where(andClause);
@@ -152,6 +186,7 @@ public class LoggerDAOImpl implements LoggerDAO {
 			logDetail.setExternalPhoneNumber(log.getExtPhoneNumber());
 			logDetail.setPhoneNumber(log.getPhoneNumber());
 			logDetail.setDuration(Utils.timeToString(log.getDuration()));
+			logDetail.setSmsContent(log.getSmsContent());
 			logDetail.setLatitude(log.getLatitude());
 			logDetail.setLongitude(log.getLongitude());
 			logDetail.setBrandModel(log.getBrandModel());

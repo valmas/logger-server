@@ -9,7 +9,7 @@ create table Log (
 	dateTime DATETIME NOT NULL,
 	duration INT,
 	smsContent TEXT,
-	direction ENUM('incoming', 'outgoing') NOT NULL,
+	direction ENUM('INCOMING', 'OUTGOING') NOT NULL,
 	latitude FLOAT(7,4),
 	longitude FLOAT(7,4),
 	cellId INT NOT NULL,
@@ -20,6 +20,6 @@ create table Log (
 	lteRSRQ VARCHAR(10),
 	lteRSSNR VARCHAR(10),
 	lteCQI VARCHAR(10),
-	logType ENUM('call', 'sms') NOT NULL,
+	logType ENUM('CALL', 'SMS') NOT NULL,
 	PRIMARY KEY (id)
 );

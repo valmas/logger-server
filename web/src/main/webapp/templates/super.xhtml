@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:ui="http://java.sun.com/jsf/facelets">
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui">
 <f:view> 
 
 	<h:outputStylesheet library="css" name="style.css"  />
@@ -18,7 +19,6 @@
   <div id="main">
     <h:form id="contentForm">
     <div id="content_header">
-    	<h:messages errorStyle="color:red" />
     	<h:link outcome="home">
     		<h1>HOME</h1>
     	</h:link>
@@ -31,8 +31,8 @@
     </div>
     </h:form>
     <div id="content_footer"></div>
-    <div id="footer">
-      <p>Copyright (c)2016-2017 Server Logger #{maven.project.version} </p>
+    <div id="footer" style="bottom: 5px; position: fixed;">
+      Copyright (c)2016-2017 Server Logger #{maven.project.version}
     </div>
   </div>
 </h:body>
