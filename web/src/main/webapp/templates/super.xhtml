@@ -18,11 +18,9 @@
 <h:body>
   <div id="main">
     <h:form id="contentForm">
-    <div id="content_header">
-    	<h:link outcome="home">
-    		<h1>HOME</h1>
-    	</h:link>
-    </div>
+    <ui:insert name="menu">
+    	<ui:include src="/templates/menu.xhtml" />
+    </ui:insert>
     <div id="site_content">
       <div id="content" style="width:100%">
       	<ui:insert name="content"></ui:insert>

@@ -26,4 +26,13 @@
  </PROCESS-ITEM>
  <PROCESS-ITEM NAME="rules:#views#pathSearch.xhtml"
   PATH="/views/pathSearch.xhtml" SHAPE="240,257,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules::2" SHAPE="32,353,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::2" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="relationFinder::#views#relationSearch.xhtml"
+    NAME="output" PATH="/views/relationSearch.xhtml"
+    TARGET="rules:#views#relationSearch.xhtml" TITLE="relationFinder" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#views#relationSearch.xhtml"
+  PATH="/views/relationSearch.xhtml" SHAPE="240,369,0,0" model-entity="JSFProcessGroup"/>
 </PROCESS>

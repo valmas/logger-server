@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:n="http://ntua/facelets"
+    xmlns:ui="http://java.sun.com/jsf/facelets">
+    
+	<div id="menu_wrapper">
+		<div id="cssmenu">
+			<ul>
+				<li class="#{menuController.menuEntries[0]}">
+					<h:commandLink id="btn_0" action="home" value="Home" 
+						actionListener="#{menuController.listener}" />
+				</li>
+				<li class="#{menuController.menuEntries[1]}">
+					<h:commandLink id="btn_1" action="#{mapController.init()}" value="Map Search" 
+						actionListener="#{menuController.listener}"/>
+				</li>
+				<li class="#{menuController.menuEntries[2]}">
+					<h:commandLink id="btn_2" action="#{mapPathController.init()}" value="Map Path Search" 
+						actionListener="#{menuController.listener}"/>
+				</li>
+				<li class="#{menuController.menuEntries[3]}">
+					<h:commandLink id="btn_3" action="#{relationFinderController.init()}" value="Relation Finder" 
+						actionListener="#{menuController.listener}"/>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+</ui:composition>

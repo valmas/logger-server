@@ -14,14 +14,19 @@
 			<p:inputText value="#{value}" readonly="#{readonly}" disabled="#{disabled}"
 				rendered="#{empty rendered ? 'true' : rendered}" maxlength="#{empty size ? '100' : size}" 
 				size="#{empty size ? '20' : size + 5}" 
-				required="#{required}" requiredMessage="#{label} #{bundle['validation.required']}"/>
+				required="#{required and n:optionalRequiredValidator()}" 
+				requiredMessage="#{label} #{bundle['validation.required']}">
+				<ui:insert name="extra"/>
+			</p:inputText>
 		</c:when>
 		<c:otherwise>
 			<p:inputText value="#{value}" readonly="#{readonly}" disabled="#{disabled}"
 				rendered="#{empty rendered ? 'true' : rendered}" maxlength="#{empty size ? '100' : size}" 
 				size="#{empty size ? '20' : size + 5}"
-				required="#{required}" requiredMessage="#{label} #{bundle['validation.required']}">
+				required="#{required and n:optionalRequiredValidator()}" 
+				requiredMessage="#{label} #{bundle['validation.required']}">
 				<f:convertNumber  maxFractionDigits="#{decimal}" minFractionDigits="#{decimal}" />
+				<ui:insert name="extra"/>
 			</p:inputText>
 		</c:otherwise>
 

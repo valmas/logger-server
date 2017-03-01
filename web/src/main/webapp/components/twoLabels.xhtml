@@ -12,7 +12,7 @@
 	<c:choose>
 		<c:when test="#{date}">
 			<p:outputLabel value="#{value}" rendered="#{rendered != null ? rendered : true}">
-				<f:convertDateTime dateStyle="long" timeZone="GMT+3" type="both"/>
+				<f:convertDateTime dateStyle="long" timeZone="EET" type="both"/>
 			</p:outputLabel>
 		</c:when>
 		<c:when test="#{text}">

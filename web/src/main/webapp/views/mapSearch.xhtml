@@ -127,7 +127,7 @@
 							<n:callSmsDirection log="#{log}"/>
 							<br/>
 							<h:outputText value="#{log.dateTime}" >
-							 <f:convertDateTime dateStyle="long" timeZone="GMT+3" type="both"/>
+							 <f:convertDateTime dateStyle="long" timeZone="EET" type="both"/>
 							</h:outputText>
 						</h:panelGroup>
 						<p:commandButton style="float:right" icon="fa fa-info-circle" action="#{mapController.setSelectedLog(log)}" 
