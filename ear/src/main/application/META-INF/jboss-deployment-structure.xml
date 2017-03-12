@@ -3,7 +3,6 @@
 	<ear-subdeployments-isolated>false</ear-subdeployments-isolated>
 	<deployment>
 		<dependencies>
-			<module name="org.apache.poi" export="true" />
 			<module name="org.hibernate" />
 			<module name="com.mysql" />
 			<module name="org.springframework.spring" />
@@ -11,7 +10,6 @@
 	</deployment>
 	<sub-deployment name="web.war">
 		<dependencies>
-			<module name="org.apache.poi" export="true" />
 			<module name="org.springframework.spring" />
 		</dependencies>
     </sub-deployment>

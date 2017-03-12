@@ -12,13 +12,22 @@
 	<ui:define name="head">
         <script type="text/javascript"
                 src="http://maps.google.com/maps/api/js?key=AIzaSyDgwKpTAu0MFK-0Y35YEGVCIthTTKXLpaE"/>
+        <script type="text/javascript">
+        	$(document).on('click','.searchPanel > .ui-panel-titlebar',
+		        function(info) {
+					if(info.target.className.indexOf('ui-icon') == -1) {	        
+						PF('panel').toggle()
+					}
+				});
+        </script>
     </ui:define>
     
 
 	<ui:define name="content">
 
-		<p:panel id="map_search_panel" toggleSpeed="500" toggleable="true" widgetVar="panel" 
-			style="position:absolute; z-index:2; top: 90px; padding: 0; width:99%">
+		<p:panel id="map_search_panel" toggleSpeed="500" toggleable="true" widgetVar="panel" collapsed="#{mapController.collapsed}"
+			styleClass="searchPanel" header="Search Criteria">
+			<p:messages />
 			<h:panelGrid columns="3">
 				<h:panelGrid columns="2">
 					
@@ -37,10 +46,14 @@
 						type="dateTime" />
 					
 					<n:calendar label="Date to" value="#{mapController.searchCriteria.dateTo}"
-						type="dateTime"/>
+						type="dateTime" />
 					
 					<n:selectOne label="Type" value="#{mapController.searchCriteria.logType}"
-						list="#{codelistController.types}"/>
+						list="#{codelistController.types}">
+						<ui:define name="extra">
+							<p:ajax event="change" update="smsContent"/>
+						</ui:define>
+					</n:selectOne>
 				
 				</h:panelGrid>
 				
@@ -60,19 +73,38 @@
 					</h:panelGrid>
 				</h:panelGroup>
 			</h:panelGrid>
-			<p:commandButton value="Search" update="map_results_panel map"
-				action="#{mapController.search()}" oncomplete="PF('panel').toggle()"/>
-				
-			<p:commandButton value="Reset" update="map_results_panel map_search_panel"
-				action="#{mapController.reset()}" />
 			
-			<f:facet name="header">
-				<p:outputLabel style="width:100%; text-align:center" value="Search Criteria" onclick="PF('panel').toggle()"/>
-	        </f:facet>
+			<h:panelGroup id="smsContent">
+				<p:outputLabel value="SMS Content" style="margin-left: 7px"/>
+				<p:inputText value="#{mapController.searchCriteria.smsContent}" 
+					disabled="#{mapController.searchCriteria.logType != 'SMS'}" 
+					size="108" style="margin-left: 68px"/>
+			</h:panelGroup>
+			
+			<br />
+			<br />
+			
+			<h:panelGroup id="buttons">
+				<p:commandButton value="Search" update="map_search_panel map_results_panel map afterLoad"
+					action="#{mapController.search()}" icon="fa fa-fw fa-search" oncomplete="toggle()"/>
+				
+				<h:panelGroup id="afterLoad">
+				    <h:outputScript>
+				        function toggle() {    
+				            if (!#{mapController.error}){
+				            	PF('panel').toggle()
+				            }
+				        }
+				    </h:outputScript>
+				</h:panelGroup>
+					
+				<p:commandButton value="Reset" update="map_results_panel map_search_panel"
+					action="#{mapController.reset()}" icon="fa fa-fw fa-remove" />
+			</h:panelGroup>
 				
 		</p:panel>
 		
-		<h:panelGrid id="map_results_panel" columns="2" style="margin-top:60px; z-index:1" 
+		<h:panelGrid id="map_results_panel" columns="2" style="margin-top:70px; z-index:1" 
 			columnClasses="map_panel_left,map_panel_right" width="100%">
 	
 			<h:panelGroup id="map">
@@ -81,7 +113,7 @@
 					type="ROADMAP" model="#{mapController.advancedModel}">
 	 
 			        <p:ajax event="overlaySelect" listener="#{mapController.onMarkerSelect}" 
-			        	oncomplete="reverseGeocode()" update="contentForm:lat contentForm:lng table"/>
+			        	oncomplete="reverseGeocode()" update="contentForm:lat contentForm:lng contentForm:mlsRadius tablePanel"/>
 			 
 			        <p:gmapInfoWindow id="infoWindow" >
 			           <h:panelGrid columns="2" columnClasses="none,alignTop">
@@ -109,37 +141,123 @@
 			    
 			    <h:inputHidden id="lat" value="#{mapController.latitude}" />
 				<h:inputHidden id="lng" value="#{mapController.longitude}" />
+				<h:inputHidden id="mlsRadius" value="#{mapController.radius}" />
 			  	
 	        </h:panelGroup>
 	        
-			<p:dataTable id="table" value="#{mapController.logs}" var="log" rendered="#{mapController.logs != null}" scrollable="true"  
-				selectionMode="single" selection="#{mapController.selectedLog}" rowKey="#{log}" scrollHeight="550" 
-				disabledSelection="#{!log.mapable}" styleClass="datatable-no-header">
-
-				<p:column headerText="" style="border-right-style: none;">
-					<h:panelGrid columns="3" columnClasses="noTableMarker,noTable,noTableButton">
-						<h:panelGroup>
-							<p:outputPanel rendered="#{log.mapable}">
-								<i class="fa fa-map-marker"/>
-							</p:outputPanel>
-						</h:panelGroup>
-						<h:panelGroup>
-							<n:callSmsDirection log="#{log}"/>
-							<br/>
-							<h:outputText value="#{log.dateTime}" >
-							 <f:convertDateTime dateStyle="long" timeZone="EET" type="both"/>
-							</h:outputText>
-						</h:panelGroup>
-						<p:commandButton style="float:right" icon="fa fa-info-circle" action="#{mapController.setSelectedLog(log)}" 
-							oncomplete="PF('popup').show();" update="contentForm:infoPopup" /> 
-					</h:panelGrid>
-				</p:column>
-				
-				<p:ajax event="rowSelect" update="contentForm:gmap" listener="#{mapController.selectMarker()}"/>
-
-			</p:dataTable>
+	        
+	        <h:panelGroup id="tablePanel" rendered="#{not empty mapController.logs}">
+		        <p:toolbar >
+			        <f:facet name="right">
+			 
+			            <p:commandButton title="Expand" icon="fa fa-fw fa-expand" 
+			            	oncomplete="PF('tablePopup').show();" update="contentForm:tableInfoPopup"/>
+			            <p:commandButton title="Export table in Excel" icon="fa fa-fw fa-download" 
+			            	action="#{mapController.export()}" ajax="false"/>
+	
+			        </f:facet>	 
+			    </p:toolbar>
+		    
+				<p:dataTable id="table" value="#{mapController.logs}" var="log" scrollable="true"  
+					selectionMode="single" selection="#{mapController.selectedLog}" rowKey="#{log}" scrollHeight="550" 
+					disabledSelection="#{!log.mapable}" styleClass="datatable-no-header">
+	
+					<p:column headerText="" style="border-right-style: none;">
+						<h:panelGrid columns="3" columnClasses="noTableMarker,noTable,noTableButton">
+							<h:panelGroup>
+								<p:outputPanel rendered="#{log.mapable}">
+									<i class="fa fa-map-marker"/>
+								</p:outputPanel>
+							</h:panelGroup>
+							<h:panelGroup>
+								<n:callSmsDirection log="#{log}"/>
+								<br/>
+								<h:outputText value="#{log.dateTime}" >
+								 <f:convertDateTime dateStyle="long" timeZone="EET" type="both"/>
+								</h:outputText>
+							</h:panelGroup>
+							<p:commandButton style="float:right" icon="fa fa-info-circle" action="#{mapController.setSelectedLog(log)}" 
+								oncomplete="PF('popup').show();" update="contentForm:infoPopup" /> 
+						</h:panelGrid>
+					</p:column>
+					
+					<p:ajax event="rowSelect" listener="#{mapController.selectMarker()}" oncomplete="markerSelected()"
+						update="contentForm:gmap contentForm:mlsRadius contentForm:lat contentForm:lng"  />
+	
+				</p:dataTable>
+			</h:panelGroup>
         </h:panelGrid>
-		
+        
+        <p:dialog id="tableInfoPopup" header="Log Results Details" widgetVar="tablePopup" showEffect="explode" 
+	       	modal="true" hideEffect="explode" >
+	       	
+	       	<p:dataTable var="log" value="#{mapController.logs}" scrollable="true" scrollHeight="500" scrollWidth="700" frozenColumns="5">
+	       	
+		        <p:column headerText="Phone Number" >
+		            <h:outputText value="#{log.phoneNumber}" />
+		        </p:column>
+		        <p:column headerText="External Phone Number"  >
+		            <h:outputText value="#{log.externalPhoneNumber}" />
+		        </p:column>
+		        <p:column headerText="Date" >
+		        	<h:outputText value="#{log.dateTime}" >
+		        		<f:convertDateTime dateStyle="medium" timeZone="EET" type="both"/>
+		        	</h:outputText>
+		        </p:column>
+		        <p:column headerText="Direction" >
+		            <h:outputText value="#{log.direction.name()}" />
+		        </p:column>
+		        <p:column headerText="Log Type" >
+		            <h:outputText value="#{log.logType.name()}" />
+		        </p:column>
+		        <p:column headerText="Duration" >
+		            <h:outputText value="#{log.duration}" />
+		        </p:column>
+		        <p:column headerText="Latitude" >
+		            <h:outputText value="#{log.latitude}" />
+		        </p:column>
+		        <p:column headerText="Longitude" >
+		            <h:outputText value="#{log.longitude}" />
+		        </p:column>
+		        <p:column headerText="Brand / Model" >
+		            <h:outputText value="#{log.brandModel}" />
+		        </p:column>
+		        <p:column headerText="Version" >
+		            <h:outputText value="#{log.version}" />
+		        </p:column>
+		        <p:column headerText="IMEI" >
+		            <h:outputText value="#{log.imei}" />
+		        </p:column>
+		        <p:column headerText="IMSI" >
+		            <h:outputText value="#{log.imsi}" />
+		        </p:column>
+		        <p:column headerText="Cell Id" >
+		            <h:outputText value="#{log.cellId}" />
+		        </p:column>
+		        <p:column headerText="LAC" >
+		            <h:outputText value="#{log.lac}" />
+		        </p:column>
+		        <p:column headerText="RAT" >
+		            <h:outputText value="#{log.rat}" />
+		        </p:column>
+		        <p:column headerText="RSSI" >
+		            <h:outputText value="#{log.rssi}" />
+		        </p:column>
+		        <p:column headerText="RSRP" >
+		            <h:outputText value="#{log.lteRSRP}" />
+		        </p:column>
+		        <p:column headerText="RSRQ" >
+		            <h:outputText value="#{log.lteRSRQ}" />
+		        </p:column>
+		        <p:column headerText="RSSNR" >
+		            <h:outputText value="#{log.lteRSSNR}" />
+		        </p:column>
+		        <p:column headerText="CQI">
+		            <h:outputText value="#{log.lteCQI}" />
+		        </p:column>
+		    </p:dataTable>
+	      		
+		</p:dialog>
         
         <n:locationFinderPopup value="#{mapController.searchCriteria}"/>
         

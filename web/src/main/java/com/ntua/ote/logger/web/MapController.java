@@ -1,13 +1,18 @@
 package com.ntua.ote.logger.web;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.log4j.Logger;
 import org.primefaces.event.map.OverlaySelectEvent;
+import org.primefaces.model.map.Circle;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
@@ -18,12 +23,17 @@ import com.ntua.ote.logger.core.common.Utils;
 import com.ntua.ote.logger.core.models.LogDetails;
 import com.ntua.ote.logger.core.models.SearchCriteria;
 import com.ntua.ote.logger.persistence.LoggerDAOImpl;
+import com.ntua.ote.logger.web.common.FacesUtil;
+import com.ntua.ote.logger.web.xls.XLSBuilder;
+import com.ntua.ote.logger.web.xls.XLSMappings;
 
 @Named
 @SessionScoped
 public class MapController implements Serializable {
 	
 	private static final long serialVersionUID = 2208902766742258519L;
+	
+	private static final Logger LOGGER = Logger.getLogger(MapController.class);
 
 	@Inject
 	private LoggerDAOImpl dao;
@@ -32,9 +42,15 @@ public class MapController implements Serializable {
 	
 	private List<LogDetails> logs;
 	
+	private Map<Long, Marker> markersMap;
+	
 	private MapModel advancedModel;
 	
 	private Marker marker;
+	
+	private String radius;
+	
+	private Marker gridMarker;
 	
 	private String mapCenter;
 	
@@ -44,28 +60,54 @@ public class MapController implements Serializable {
 	
 	private String longitude;
 	
+	private boolean error;
+	
+	private boolean collapsed;
+	
 	public String init(){
 		searchCriteria = new SearchCriteria();
 		logs = null;
 		mapCenter="0,0";
 		advancedModel = new DefaultMapModel();
+		collapsed = false;
 		return "mapSearch";
 	}
 	
 	public void search(){
-		logs = dao.search(searchCriteria);
-		boolean add = false;
-		advancedModel = new DefaultMapModel();
-		for(LogDetails log : logs) {
-			if(Utils.hasLocation(log)) {
-				LatLng loc = new LatLng(log.getLatitude(), log.getLongitude());
-				advancedModel.addOverlay(new Marker(loc, Utils.getMarkerTitle(log), log, Constants.BLUE_MARKER_ICON));
-				if(!add) {
-					mapCenter = "" + log.getLatitude() +"," + log.getLongitude();
-					add = true;
-				}
+		error = false;
+		if(validation(searchCriteria)) {
+			logs = dao.search(searchCriteria);
+			boolean add = false;
+			markersMap = new HashMap<>();
+			advancedModel = new DefaultMapModel();
+			if(!logs.isEmpty()) {			
+				for(LogDetails log : logs) {
+					if(Utils.hasLocation(log)) {
+						LatLng loc = new LatLng(log.getLatitude(), log.getLongitude());
+						Marker marker = new Marker(loc, Utils.getMarkerTitle(log), log, Constants.BLUE_MARKER_ICON);
+						advancedModel.addOverlay(marker);
+						markersMap.put(log.getId(), marker);
+						if(!add) {
+							mapCenter = "" + log.getLatitude() +"," + log.getLongitude();
+							add = true;
+						}
+					}
+				}	
+			} else {
+				FacesUtil.addInfoMessage("No records found for the provided criteria", null, false);
+				error = true;
 			}
-		}	
+		}
+	}
+	
+	private boolean validation(SearchCriteria searchCriteria){
+		if(searchCriteria.getDateFrom() != null && searchCriteria.getDateTo() != null
+				&& searchCriteria.getDateFrom().after(searchCriteria.getDateTo())) {
+			FacesUtil.addErrorMessage("Date from must be after date to", null, false);
+			error = true;
+			return false;
+		}
+		return true;
 	}
 
 	public void reset(){
@@ -73,26 +115,38 @@ public class MapController implements Serializable {
 		searchCriteria = new SearchCriteria();
 	}
 	
+	public void export(){
+		try {
+			byte[] xls = XLSBuilder.exportXLS(logs, XLSMappings.logDetailsMapping, XLSMappings.logDetailsHeader);
+			FacesUtil.download("logDetails.xls", xls);
+		} catch (IOException e) {
+			LOGGER.error(e.getMessage());
+		}
+	}
+	
 	public void onMarkerSelect(OverlaySelectEvent event) {
         marker = (Marker) event.getOverlay();
         selectedLog = (LogDetails) marker.getData();
         latitude = "" + selectedLog.getLatitude();
         longitude = "" + selectedLog.getLongitude();
+        radius = "" + selectedLog.getRadius();
+        //circle = circlesMap.get(selectedLog.getId());
     }
 	
 	public void selectMarker() {
-		if(marker != null) {
-			marker.setIcon(Constants.BLUE_MARKER_ICON);
+		if(gridMarker != null) {
+			gridMarker.setIcon(Constants.BLUE_MARKER_ICON);
 		}
-        LatLng coord = new LatLng(selectedLog.getLatitude(), selectedLog.getLongitude());
-        for(Marker marker : advancedModel.getMarkers()) {
-        	if(marker.getLatlng().equals(coord)) {
-        		this.marker = marker;
-        		marker.setIcon("");
-        		mapCenter = marker.getLatlng().getLat()+","+marker.getLatlng().getLng();
-        		break;
-        	}
-        }
+        Marker marker = markersMap.get(selectedLog.getId());
+        //circle = circlesMap.get(selectedLog.getId());
+		this.marker = marker;
+		marker.setIcon("");
+		gridMarker = marker;
+		latitude = "" + selectedLog.getLatitude();
+        longitude = "" + selectedLog.getLongitude();
+        radius = "" + selectedLog.getRadius();
+		mapCenter = marker.getLatlng().getLat()+","+marker.getLatlng().getLng();
+
     }
 	
 	public LogDetails getSelectedLog() {
@@ -159,4 +213,24 @@ public class MapController implements Serializable {
 		this.longitude = longitude;
 	}
 	
+	public boolean isError() {
+		return error;
+	}
+
+	public String getRadius() {
+		return radius;
+	}
+
+	public void setRadius(String radius) {
+		this.radius = radius;
+	}
+
+	public boolean isCollapsed() {
+		return collapsed;
+	}
+
+	public void setCollapsed(boolean collapsed) {
+		this.collapsed = collapsed;
+	}
+
 }

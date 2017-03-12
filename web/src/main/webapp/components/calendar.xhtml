@@ -13,7 +13,7 @@
 	<c:choose>
 		<c:when test="#{empty type or type == 'date'}">
 			<p:calendar value="#{value}" rendered="#{empty rendered ? 'true' : rendered}" disabled="#{disabled}"
-				readonly="#{readonly}" effect="fold" showOn="button" pattern="dd-MM-yyyy"
+				readonly="#{readonly}" effect="fold" showOn="button" pattern="dd-MM-yyyy" 
 				required="#{required and n:optionalRequiredValidator()}" requiredMessage="#{label} is required" />
 		</c:when>
 		<c:when test="#{type == 'dateTime'}">

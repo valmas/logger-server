@@ -45,11 +45,17 @@ public class Log {
 	
 	private double longitude;
 	
+	private double radius;
+	
 	private int cellId;
 	
 	private int lac;
 	
 	private String rat;
+	
+	private int mnc;
+	
+	private int mcc;
 	
 	private int rssi;
 	
@@ -167,6 +173,14 @@ public class Log {
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
+	
+	public double getRadius() {
+		return radius;
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
 
 	public int getCellId() {
 		return cellId;
@@ -190,6 +204,22 @@ public class Log {
 
 	public void setRat(String rat) {
 		this.rat = rat;
+	}
+	
+	public int getMnc() {
+		return mnc;
+	}
+
+	public void setMnc(int mnc) {
+		this.mnc = mnc;
+	}
+
+	public int getMcc() {
+		return mcc;
+	}
+
+	public void setMcc(int mcc) {
+		this.mcc = mcc;
 	}
 
 	public int getRssi() {

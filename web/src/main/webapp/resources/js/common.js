@@ -1,6 +1,7 @@
 var markerCenter;
 var markerRadius;
 var map;
+var mlsRadius;
 
 function initMap() {
 	document.getElementById('contentForm:radius').innerHTML = ' ';
@@ -82,6 +83,40 @@ function placeCircle(location) {
 	}
 }
 
+function moveMapCamera(){
+	var map = PF('widgetMap').map;
+	var lat =  document.getElementById("contentForm:lat").value;
+	var lng =  document.getElementById("contentForm:lng").value;
+	var latlng = new google.maps.LatLng(lat, lng);
+	map.panTo(latlng);
+}
+
+function markerSelected(){
+	var pfMap = PF('widgetMap').map;
+	var lat =  document.getElementById("contentForm:lat").value;
+	var lng =  document.getElementById("contentForm:lng").value;
+	var radius =  document.getElementById("contentForm:mlsRadius").value;
+	var latlng = new google.maps.LatLng(lat, lng);
+	if(mlsRadius != null) {
+		mlsRadius.setMap(null);
+		mlsRadius = null;
+	}
+	if(radius > 0) {
+		var tmp = parseFloat(radius);
+		mlsRadius = new google.maps.Circle({
+	        strokeColor: '#0000FF',
+	        strokeOpacity: 0.8,
+	        strokeWeight: 2,
+	        fillColor: '#0000FF',
+	        fillOpacity: 0.35,
+	        clickable: false,
+	        map: pfMap,
+	        center: latlng,
+	        radius: tmp
+	      });
+	}
+}
+
 function openInfoWindow() {
 	var lat =  document.getElementById("contentForm:lat").value;
 	var lng =  document.getElementById("contentForm:lng").value;
@@ -103,6 +138,7 @@ function openInfoWindow() {
 }
 
 function reverseGeocode(){
+	markerSelected();
 	var lat =  document.getElementById("contentForm:lat").value;
 	var lng =  document.getElementById("contentForm:lng").value;
 	if(lat != "" && lng != "") {
@@ -111,7 +147,10 @@ function reverseGeocode(){
 	    geocoder.geocode({'location': latlng}, function(results, status) {
 	      if (status === 'OK') {
 	        if (results[1]) {
-	          document.getElementById("contentForm:location").innerHTML = results[1].formatted_address;
+	        	setTimeout(function(){ 
+	        		document.getElementById("contentForm:location").innerHTML = results[1].formatted_address;
+	        	}, 500);
+	        	
 	          //alert(results[1].formatted_address);
 	        } else {
 	          window.alert('No results found');

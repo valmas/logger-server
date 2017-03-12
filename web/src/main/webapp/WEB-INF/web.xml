@@ -36,7 +36,7 @@
 		<param-value>/WEB-INF/ntua.taglib.xml</param-value>
 	</context-param>
 	<welcome-file-list>
-		<welcome-file>/index.xhtml</welcome-file>
+		<welcome-file>/login.xhtml</welcome-file>
 	</welcome-file-list>
 
 	<context-param>

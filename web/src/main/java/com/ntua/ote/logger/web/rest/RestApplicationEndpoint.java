@@ -14,8 +14,10 @@ import org.apache.log4j.Logger;
 import com.ntua.ote.logger.persistence.LoggerDAO;
 import com.ntua.ote.logger.persistence.jpa.Log;
 import com.ntua.ote.logger.web.rest.model.DurationRequest;
+import com.ntua.ote.logger.web.rest.model.GeolocateResponse;
 import com.ntua.ote.logger.web.rest.model.InitialRequest;
 import com.ntua.ote.logger.web.rest.model.LocationRequest;
+import com.ntua.ote.logger.web.service.GeolocateService;
 
 @Stateless
 @Path("/log")
@@ -51,6 +53,8 @@ public class RestApplicationEndpoint {
 		log.setLteRSSNR(initialRequest.getLteRssnr());
 		log.setPhoneNumber(initialRequest.getPhoneNumber());
 		log.setRat(initialRequest.getRat());
+		log.setMnc(initialRequest.getMnc());
+		log.setMcc(initialRequest.getMcc());
 		log.setRssi(initialRequest.getRssi());
 		log.setSmsContent(initialRequest.getSmsContent());
 		log.setVersion(initialRequest.getVersion());
@@ -64,7 +68,30 @@ public class RestApplicationEndpoint {
     @Path("/location/")
     public int locationLogging(LocationRequest locationRequest) {
 		LOGGER.info("<locationLogging> invoked" + locationRequest);
-		return loggerDAO.updateLocation(locationRequest.getRowId(), locationRequest.getLongitude(), locationRequest.getLatitude());
+		if(locationRequest.isLocated()) {
+			return loggerDAO.updateLocation(locationRequest.getRowId(), locationRequest.getLongitude(), locationRequest.getLatitude(), 0);
+		} else {
+			/*final long id = locationRequest.getRowId();
+			new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					Log log = loggerDAO.get(id);
+					GeolocateResponse geolocateResponse = GeolocateService.geolocate(log);
+					if(geolocateResponse != null) {
+						loggerDAO.updateLocation(id, geolocateResponse.getLocation().getLat(), geolocateResponse.getLocation().getLng(),  
+							geolocateResponse.getAccuracy());
+					}
+				}
+			}).start();*/
+			Log log = loggerDAO.get(locationRequest.getRowId());
+			GeolocateResponse geolocateResponse = GeolocateService.geolocate(log);
+			if(geolocateResponse != null) {
+				loggerDAO.updateLocation(locationRequest.getRowId(), geolocateResponse.getLocation().getLng(), geolocateResponse.getLocation().getLat(),  
+					geolocateResponse.getAccuracy());
+			}
+			return 1;
+		}
     }
 	
 	@POST

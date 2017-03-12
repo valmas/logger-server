@@ -8,8 +8,54 @@
     
 <ui:composition template="/templates/super.xhtml">
 
+	<ui:define name="head">
+        <script type="text/javascript">
+	        $(document).ready(function (){
+	        	pageLoaded();           
+	        })
+        </script>
+    </ui:define>
+
 	<ui:define name="content">
-		
+		<p:dataTable id="newest_logs" var="log" value="#{welcomeController.logs}" 
+			style="padding-top: 20px; padding-left: 30px; padding-right: 30px;">
+	       	
+	        <p:column headerText="Phone Number" >
+	            <h:outputText value="#{log.phoneNumber}" />
+	        </p:column>
+	        <p:column headerText="External Phone Number"  >
+	            <h:outputText value="#{log.externalPhoneNumber}" />
+	        </p:column>
+	        <p:column headerText="Date" >
+	        	<h:outputText value="#{log.dateTime}" >
+	        		<f:convertDateTime dateStyle="medium" timeZone="EET" type="both"/>
+	        	</h:outputText>
+	        </p:column>
+	        <p:column headerText="Direction" >
+	            <h:outputText value="#{log.direction.name()}" />
+	        </p:column>
+	        <p:column headerText="Log Type" >
+	            <h:outputText value="#{log.logType.name()}" />
+	        </p:column>
+	        <p:column headerText="Duration" >
+	            <h:outputText value="#{log.duration}" />
+	        </p:column>
+	        
+	        <p:column headerText="Actions" style="width:80px">
+				<p:commandButton rendered="#{log.mapable}" icon="fa fa-map-marker" action="#{welcomeController.goToMap(log)}" 
+					update="contentForm:infoPopup" ajax="false" style="float:left;"/> 
+				
+				<p:commandButton icon="fa fa-info-circle" action="#{welcomeController.setSelectedLog(log)}" 
+					oncomplete="PF('popup').show();" update="contentForm:infoPopup" style="float:right;"/> 
+			</p:column>
+	    </p:dataTable>
+	    
+	    <p:poll interval="10" listener="#{welcomeController.refresh()}" update="newest_logs" />
+	    
+	    <n:logInfoPopup value="#{welcomeController.selectedLog}"/>
+	    
+	    <p:remoteCommand name="pageLoaded" update="newest_logs"
+                actionListener="#{welcomeController.refresh()}"/>
 	</ui:define>
 </ui:composition>
 </html>

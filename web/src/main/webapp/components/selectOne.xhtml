@@ -12,6 +12,7 @@
 	<p:selectOneMenu value="#{value}">
         <f:selectItem itemLabel="Select One" itemValue="" noSelectionOption="true"  itemDisabled="#{emptySelection}"/>
         <f:selectItems value="#{list}" />
+        <ui:insert name="extra"/>
     </p:selectOneMenu>
 	
 </ui:composition>

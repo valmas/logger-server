@@ -12,9 +12,12 @@ create table Log (
 	direction ENUM('INCOMING', 'OUTGOING') NOT NULL,
 	latitude FLOAT(7,4),
 	longitude FLOAT(7,4),
+	radius FLOAT(15,4),
 	cellId INT NOT NULL,
 	lac INT NOT NULL,
 	rat VARCHAR(20) NOT NULL,
+	mnc INT,
+	mcc INT,
 	rssi INT NOT NULL,
 	lteRSRP VARCHAR(10),
 	lteRSRQ VARCHAR(10),
@@ -22,4 +25,10 @@ create table Log (
 	lteCQI VARCHAR(10),
 	logType ENUM('CALL', 'SMS') NOT NULL,
 	PRIMARY KEY (id)
+);
+
+create table Users (
+	userName VARCHAR(50) NOT NULL,
+	password VARCHAR(41) NOT NULL,
+	PRIMARY KEY (userName)
 );

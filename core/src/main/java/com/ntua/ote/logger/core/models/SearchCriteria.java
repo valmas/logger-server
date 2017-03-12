@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 public class SearchCriteria {
+	
+	private long id;
 
 	private String phoneNumber;
 
@@ -21,7 +23,17 @@ public class SearchCriteria {
 	
 	private BigDecimal latitude;
 	
+	private String smsContent;
+	
 	private int radius;
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	public String getPhoneNumber() {
 		return phoneNumber;
@@ -93,6 +105,14 @@ public class SearchCriteria {
 
 	public void setRadius(int radius) {
 		this.radius = radius;
+	}
+
+	public String getSmsContent() {
+		return smsContent;
+	}
+
+	public void setSmsContent(String smsContent) {
+		this.smsContent = smsContent;
 	}
 	
 }

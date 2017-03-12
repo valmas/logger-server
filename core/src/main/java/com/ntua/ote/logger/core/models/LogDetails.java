@@ -1,12 +1,17 @@
 package com.ntua.ote.logger.core.models;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.ntua.ote.logger.core.enums.Direction;
 import com.ntua.ote.logger.core.enums.LogType;
 
-public class LogDetails {
+public class LogDetails implements Serializable {
 	
+	private static final long serialVersionUID = 1038774093574259259L;
+	
+	private long id;
+
 	private String phoneNumber;
 	
 	private String externalPhoneNumber;
@@ -20,6 +25,8 @@ public class LogDetails {
 	private double latitude;
 	
 	private double longitude;
+	
+	private double radius;
 	
 	private String brandModel;
 	
@@ -37,6 +44,10 @@ public class LogDetails {
 	
 	private String rat;
 	
+	private int mnc;
+	
+	private int mcc;
+	
 	private int rssi;
 	
 	private String lteRSRP;
@@ -48,6 +59,14 @@ public class LogDetails {
 	private String lteCQI;
 	
 	private LogType logType;
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	public String getPhoneNumber() {
 		return phoneNumber;
@@ -103,6 +122,14 @@ public class LogDetails {
 
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
+	}
+	
+	public double getRadius() {
+		return radius;
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
 	}
 
 	public String getBrandModel() {
@@ -219,6 +246,22 @@ public class LogDetails {
 	
 	public boolean isMapable(){
 		return (longitude != 0 && latitude != 0);
+	}
+
+	public int getMnc() {
+		return mnc;
+	}
+
+	public void setMnc(int mnc) {
+		this.mnc = mnc;
+	}
+
+	public int getMcc() {
+		return mcc;
+	}
+
+	public void setMcc(int mcc) {
+		this.mcc = mcc;
 	}
 	
 }

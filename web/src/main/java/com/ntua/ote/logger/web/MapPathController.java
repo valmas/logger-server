@@ -20,6 +20,7 @@ import com.ntua.ote.logger.core.common.Utils;
 import com.ntua.ote.logger.core.models.LogDetails;
 import com.ntua.ote.logger.core.models.SearchCriteria;
 import com.ntua.ote.logger.persistence.LoggerDAOImpl;
+import com.ntua.ote.logger.web.common.FacesUtil;
 import com.ntua.ote.logger.web.components.ManyInputSelect;
 
 @Named
@@ -49,6 +50,8 @@ public class MapPathController implements Serializable {
 	
 	private ManyInputSelect inputs;
 	
+	private boolean error;
+	
 	public String init(){
 		inputs = new ManyInputSelect();
 		searchCriteria = new SearchCriteria();
@@ -59,34 +62,49 @@ public class MapPathController implements Serializable {
 	}
 	
 	public void search(){
-		logs = new ArrayList<>();
-		advancedModel = new DefaultMapModel();
+		
 		inputs.add();
-		for(ManyInputSelect.ManyInputSelectItem item : inputs.getInputs()) {
-			searchCriteria.setPhoneNumber(item.getInput());
-			List<LogDetails> partialLogs = dao.searchPath(searchCriteria);		
-			
-			Polyline polyline = new Polyline();
-			for(LogDetails log : partialLogs) {
-				if(Utils.hasLocation(log)) {
-					LatLng loc = new LatLng(log.getLatitude(), log.getLongitude());		
-			        polyline.getPaths().add(loc);
-			        polyline.setStrokeWeight(10);
-			        polyline.setStrokeColor(item.getColor());
-			        polyline.setStrokeOpacity(0.7);
-			        
-					advancedModel.addOverlay(polyline);
-					
-					advancedModel.addOverlay(new Marker(loc, Utils.getMarkerTitle(log), log, Constants.BLUE_MARKER_ICON));
+		error = false;
+		if(validation(searchCriteria)) {
+			logs = new ArrayList<>();
+			advancedModel = new DefaultMapModel();
+			for(ManyInputSelect.ManyInputSelectItem item : inputs.getInputs()) {
+				searchCriteria.setPhoneNumber(item.getInput());
+				List<LogDetails> partialLogs = dao.searchPath(searchCriteria);		
+				
+				Polyline polyline = new Polyline();
+				for(LogDetails log : partialLogs) {
+					if(Utils.hasLocation(log)) {
+						LatLng loc = new LatLng(log.getLatitude(), log.getLongitude());		
+				        polyline.getPaths().add(loc);
+				        polyline.setStrokeWeight(10);
+				        polyline.setStrokeColor(item.getColor());
+				        polyline.setStrokeOpacity(0.7);
+				        
+						advancedModel.addOverlay(polyline);
+						
+						advancedModel.addOverlay(new Marker(loc, Utils.getMarkerTitle(log), log, Constants.BLUE_MARKER_ICON));
+					}
 				}
+				logs.addAll(partialLogs);
 			}
-			logs.addAll(partialLogs);
+			if(!logs.isEmpty()) {
+				mapCenter = logs.get(0).getLatitude() + "," + logs.get(0).getLongitude();
+			} else {
+				FacesUtil.addInfoMessage("No records found for the provided criteria", null, false);
+				error = true;
+			}
 		}
-		if(!logs.isEmpty()) {
-			mapCenter = logs.get(0).getLatitude() + "," + logs.get(0).getLongitude();
-		} else if(inputs.getInputs().isEmpty()) {
-			//FacesUtil.addErrorMessage("Please provide a phone number", null, false);
+	}
+	
+	private boolean validation(SearchCriteria searchCriteria){
+		if(searchCriteria.getDateFrom() != null && searchCriteria.getDateTo() != null
+				&& searchCriteria.getDateFrom().after(searchCriteria.getDateTo())) {
+			FacesUtil.addErrorMessage("Date from must be after date to", null, false);
+			error = true;
+			return false;
 		}
+		return true;
 	}
 
 	public void reset(){
@@ -192,4 +210,7 @@ public class MapPathController implements Serializable {
 		this.inputs = inputs;
 	}
 	
+	public boolean isError() {
+		return error;
+	}
 }

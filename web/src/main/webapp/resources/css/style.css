@@ -189,6 +189,24 @@
     z-index:2; 
 }
 
-.diagramEndpointSelected {
-	fillStyle: red;
+.diagramElementSelected {
+	background-color: red;
 }
+
+/* Login page */
+.loginPanel {
+	position:fixed; 
+	top:35%; 
+	left:40%;
+}
+
+.loginRight {
+	padding-left: 15px;
+}
+
+.loginGrid {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+

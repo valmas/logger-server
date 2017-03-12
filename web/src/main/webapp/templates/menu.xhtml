@@ -25,7 +25,13 @@
 					<h:commandLink id="btn_3" action="#{relationFinderController.init()}" value="Relation Finder" 
 						actionListener="#{menuController.listener}"/>
 				</li>
+				<li style="float:right; top:20px;">
+					<p:outputLabel value="User: #{userSessionBean.userName}" style="margin-right:20px"/>
+					<p:commandButton value="Logout" ajax="false" action="#{loginController.logout()}" 
+						icon="fa fa-sign-out" />
+				</li>
 			</ul>
+			
 		</div>
 	</div>
 

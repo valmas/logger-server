@@ -35,4 +35,5 @@ public class Utils {
 		result[1] = (radius / (111111 * Math.cos(lat)));
 		return result;
 	}
+	
 }

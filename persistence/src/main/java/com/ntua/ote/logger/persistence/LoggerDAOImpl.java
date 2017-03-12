@@ -28,8 +28,11 @@ import com.ntua.ote.logger.core.enums.LogType;
 import com.ntua.ote.logger.core.models.LogDetails;
 import com.ntua.ote.logger.core.models.Node;
 import com.ntua.ote.logger.core.models.SearchCriteria;
+import com.ntua.ote.logger.core.models.SearchResults;
 import com.ntua.ote.logger.persistence.jpa.Log;
 import com.ntua.ote.logger.persistence.jpa.Log_;
+import com.ntua.ote.logger.persistence.jpa.Users;
+import com.ntua.ote.logger.persistence.jpa.Users_;
 
 @ApplicationScoped
 public class LoggerDAOImpl implements LoggerDAO {
@@ -56,12 +59,13 @@ public class LoggerDAOImpl implements LoggerDAO {
 	}
 
 	@Override
-	public int updateLocation(long id, double longitude, double latitude) {
+	public int updateLocation(long id, double longitude, double latitude, double radius) {
 		try {
 			Log log = entityManager.find(Log.class, id);
 			if (log != null) {
 				log.setLongitude(longitude);
 				log.setLatitude(latitude);
+				log.setRadius(radius);
 				entityManager.flush();
 				return 1;
 			} else {
@@ -92,11 +96,24 @@ public class LoggerDAOImpl implements LoggerDAO {
 		}
 	}
 	
-	public List<LogDetails> getLogDetails() {
+	@Override
+	public Log get(Long id) {
+		try {
+			Log log = entityManager.find(Log.class, id);
+			return log;
+		} catch (Exception e) {
+			LOGGER.error("<get> :", e);
+			return null;
+		}
+	}
+	
+	public List<LogDetails> getLogDetails(int limit) {
 		try {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<Log> query = cb.createQuery(Log.class);
-			List<Log> logs = entityManager.createQuery(query).getResultList();
+			Root<Log> sm = query.from(Log.class);
+			query.orderBy(cb.desc(sm.get(Log_.dateTime)));
+			List<Log> logs = entityManager.createQuery(query).setMaxResults(limit).getResultList();
 			return convertLog(logs);
 		} catch (Exception e) {
 			LOGGER.error("<updateDuration> :", e);
@@ -110,6 +127,9 @@ public class LoggerDAOImpl implements LoggerDAO {
 			CriteriaQuery<Log> query = cb.createQuery(Log.class);
 			Root<Log> sm = query.from(Log.class);
 			List<Predicate> predicates = new ArrayList<>();
+			if(searchCriteria.getId() > 0) {
+				predicates.add(cb.equal(sm.get(Log_.id), searchCriteria.getId()));
+			}
 			if(StringUtils.hasText(searchCriteria.getPhoneNumber())) {
 				predicates.add(cb.equal(sm.get(Log_.phoneNumber), searchCriteria.getPhoneNumber()));
 			}
@@ -128,6 +148,12 @@ public class LoggerDAOImpl implements LoggerDAO {
 			if(StringUtils.hasText(searchCriteria.getLogType())) {
 				predicates.add(cb.equal(sm.get(Log_.logType), LogType.valueOf(searchCriteria.getLogType().toUpperCase())));
 			}
+			if(StringUtils.hasText(searchCriteria.getSmsContent())) {
+				String[] tokens = searchCriteria.getSmsContent().split(" ");
+				for(String s : tokens) {
+					predicates.add(cb.like(sm.get(Log_.smsContent), "%"+s+"%"));
+				}
+			}
 			if(searchCriteria.getLongitude() != null && searchCriteria.getLatitude() != null && searchCriteria.getRadius() > 0) {
 				double[] diffLatLng = Utils.calculateLatLngFromRadius(searchCriteria.getRadius(), searchCriteria.getLatitude().doubleValue(), 
 						searchCriteria.getLongitude().doubleValue());
@@ -145,7 +171,7 @@ public class LoggerDAOImpl implements LoggerDAO {
 				Predicate andClause = cb.and(predicates.toArray(new Predicate[predicates.size()]));
 				query.where(andClause);
 			}
-			
+			query.orderBy(cb.desc(sm.get(Log_.dateTime)));
 			List<Log> logs = entityManager.createQuery(query).getResultList();
 			return convertLog(logs);
 		} catch (Exception e) {
@@ -185,12 +211,14 @@ public class LoggerDAOImpl implements LoggerDAO {
 		}
 	}
 	
-	public List<Node> searchRelation(SearchCriteria searchCriteria) {
-		List<Node> results = new ArrayList<>();
+	public SearchResults searchRelation(SearchCriteria searchCriteria) {
+		SearchResults results = new SearchResults();
+		List<Node> nodes = new ArrayList<>();
+		results.setNodes(nodes);
 		if(StringUtils.hasLength(searchCriteria.getPhoneNumber())) {
 			Node root = new Node(searchCriteria.getPhoneNumber(), 0);
 			
-			results.add(root);
+			nodes.add(root);
 			searchIntRelation(searchCriteria, root);
 			searchExtRelation(searchCriteria, root);
 			Set<String> uniqueSet = new HashSet<>();
@@ -202,6 +230,9 @@ public class LoggerDAOImpl implements LoggerDAO {
 			}
 			while(!list.isEmpty()) {
 				Node node = list.get(0);
+				if(node.getPhoneNumber().equals(searchCriteria.getExternalPhoneNumber())) {
+					results.setRelationFound(true);
+				}
 				String phoneNumber = node.getPhoneNumber();
 				int level = node.getLevel();
 				if(!uniqueSet.contains(phoneNumber)) {
@@ -211,7 +242,7 @@ public class LoggerDAOImpl implements LoggerDAO {
 						list.add(s);
 						s.setLevel(level + 1);
 					}
-					results.add(node);
+					nodes.add(node);
 					uniqueSet.add(phoneNumber);
 				}
 				list.remove(0);
@@ -287,6 +318,7 @@ public class LoggerDAOImpl implements LoggerDAO {
 		List<LogDetails> logDetails = new ArrayList<LogDetails>();
 		for(Log log : logs) {
 			LogDetails logDetail = new LogDetails();
+			logDetail.setId(log.getId());
 			logDetail.setDateTime(new Date(log.getDateTime().getTime()));
 			logDetail.setExternalPhoneNumber(log.getExtPhoneNumber());
 			logDetail.setPhoneNumber(log.getPhoneNumber());
@@ -308,8 +340,27 @@ public class LoggerDAOImpl implements LoggerDAO {
 			logDetail.setLteRSSNR(log.getLteRSSNR());
 			logDetail.setRssi(log.getRssi());
 			logDetail.setRat(log.getRat());
+			logDetail.setMnc(log.getMnc());
+			logDetail.setMcc(log.getMcc());
+			logDetail.setRadius(log.getRadius());
 			logDetails.add(logDetail);
 		}
 		return logDetails;
 	}
+	
+	public boolean login(String userName, String password){
+		String query =
+		   "select count(u) from Users u where u.userName = :userName"
+		   + " and u.password = PASSWORD(:userPassword)";
+		Query jpqlQuery = entityManager.createQuery(query)
+		    .setParameter("userName", userName)
+		    .setParameter("userPassword", password);
+		long count = (long) jpqlQuery.getSingleResult();
+		if(count > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }

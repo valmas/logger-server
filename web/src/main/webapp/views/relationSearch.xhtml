@@ -13,7 +13,7 @@
         <script type="text/javascript"
                 src="http://maps.google.com/maps/api/js?key=AIzaSyDgwKpTAu0MFK-0Y35YEGVCIthTTKXLpaE"/>
         <script type="text/javascript">
-		$(document).on('dblclick',
+			$(document).on('dblclick',
 		        '.ui-diagram > .ui-diagram-element',
 		        function(info) {
 		            elementClicked([ {
@@ -21,6 +21,12 @@
 		                value : info.target.id
 		            } ]);
 		        });
+			$(document).on('click','.searchPanel > .ui-panel-titlebar',
+		        function(info) {
+					if(info.target.className.indexOf('ui-icon') == -1) {	        
+						PF('panel').toggle()
+					}
+				});
 		</script>
     </ui:define>
     
@@ -28,7 +34,7 @@
 	<ui:define name="content">
 
 		<p:panel id="relation_search_panel" toggleSpeed="500" toggleable="true" widgetVar="panel" 
-			styleClass="searchPanel">
+			styleClass="searchPanel" header="Search Criteria">
 			<p:messages />
 			<h:panelGrid columns="3" id="criteria">
 				<h:panelGrid columns="2">
@@ -57,15 +63,20 @@
 				</h:panelGrid>
 				
 			</h:panelGrid>
-			<p:commandButton id="doValidateAndSearch" value="Search" update="relation_results_panel"
-				action="#{relationFinderController.search()}" oncomplete="PF('panel').toggle()"/>
-				
+			<p:commandButton id="doValidateAndSearch" value="Search" update="@form afterLoad"
+				action="#{relationFinderController.search()}" oncomplete="toggle(args &amp;&amp; !args.validationFailed)"
+				icon="fa fa-fw fa-search" />
+			<h:panelGroup id="afterLoad">
+			    <h:outputScript>
+			        function toggle(validationFailed) {    
+			            if (!#{relationFinderController.error} &amp;&amp; validationFailed){
+			            	PF('panel').toggle()
+			            }
+			        }
+			    </h:outputScript>
+			</h:panelGroup>
 			<p:commandButton value="Reset" update="relation_search_panel relation_results_panel"
-				action="#{relationFinderController.reset()}" />
-			
-			<f:facet name="header">
-				<p:outputLabel style="width:100%; text-align:center" value="Search Criteria" onclick="PF('panel').toggle()"/>
-	        </f:facet>
+				action="#{relationFinderController.reset()}" icon="fa fa-fw fa-remove"/>
 				
 		</p:panel>
 		

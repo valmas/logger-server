@@ -23,11 +23,14 @@ import org.primefaces.model.diagram.endpoint.BlankEndPoint;
 import org.primefaces.model.diagram.endpoint.DotEndPoint;
 import org.primefaces.model.diagram.endpoint.EndPoint;
 import org.primefaces.model.diagram.endpoint.EndPointAnchor;
+import org.springframework.util.StringUtils;
 
 import com.ntua.ote.logger.core.common.Constants;
 import com.ntua.ote.logger.core.models.Node;
 import com.ntua.ote.logger.core.models.SearchCriteria;
+import com.ntua.ote.logger.core.models.SearchResults;
 import com.ntua.ote.logger.persistence.LoggerDAOImpl;
+import com.ntua.ote.logger.web.common.FacesUtil;
 import com.sun.faces.util.CollectionsUtils;
 
 @Named
@@ -46,6 +49,8 @@ public class RelationFinderController implements Serializable {
 	private Map<String, Element> elementMap;
 	
 	private Element selectedElement;
+	
+	private boolean error;
 
 	public String init() {
 		searchCriteria = new SearchCriteria();
@@ -54,54 +59,86 @@ public class RelationFinderController implements Serializable {
 	}
 
 	public void search() {
-		elementMap = new HashMap<>();
+		error = false;
+		if(validation(searchCriteria)) {
+			elementMap = new HashMap<>();
+			SearchResults results = dao.searchRelation(searchCriteria);
+			List<Node> nodes = results.getNodes();
+			if(!nodes.isEmpty() && nodes.size() > 1) {
+				if(StringUtils.hasLength(searchCriteria.getExternalPhoneNumber()) && !results.isRelationFound()) {
+					FacesUtil.addInfoMessage("No relation found between " + searchCriteria.getPhoneNumber() + 
+							" and " + searchCriteria.getExternalPhoneNumber(), null, false);
+					error = true;
+					model = null;
+				} else {
+					constructTree(results, searchCriteria.getExternalPhoneNumber());
+				}
+			} else {
+				FacesUtil.addInfoMessage("No records found for the provided phone number", null, false);
+				error = true;
+				model = null;
+			}
+		}
+	}
+	
+	private boolean validation(SearchCriteria searchCriteria){
+		if(searchCriteria.getDateFrom() != null && searchCriteria.getDateTo() != null
+				&& searchCriteria.getDateFrom().after(searchCriteria.getDateTo())) {
+			FacesUtil.addErrorMessage("Date from must be after date to", null, false);
+			error = true;
+			return false;
+		}
+		return true;
+	}
+		
+	private void constructTree(SearchResults results, String externalPhoneNumber){
 		Map<String, Integer> arrayMap = new HashMap<>();
-		List<Node> results = dao.searchRelation(searchCriteria);
-		if(!results.isEmpty()) {
-			model = new DefaultDiagramModel();
-			model.setMaxConnections(-1);
-			model.setConnectionsDetachable(false);
-			
-			Element root = new Element(searchCriteria.getPhoneNumber(), "50em", "2em");
-			root.setId(searchCriteria.getPhoneNumber());
-			model.addElement(root);
-			elementMap.put(searchCriteria.getPhoneNumber(), root);
-			int i=0, level=0;
-			for(Node node : results) {
-				if(level < node.getLevel()) {
-					i = 0;
-					level = node.getLevel();
-				}
-				for(Node childNode : node.getChildren()) {
-					if(!elementMap.containsKey(childNode.getPhoneNumber())) {
-						Element el = new Element(childNode.getPhoneNumber(), (2 + i*10) +"em", 8 + level*6 + "em");
-						el.setId(childNode.getPhoneNumber());
-						elementMap.put(childNode.getPhoneNumber(), el);
-						model.addElement(el);
-						i++;
-					}
+		List<Node> nodes = results.getNodes();
+		model = new DefaultDiagramModel();
+		model.setMaxConnections(-1);
+		model.setConnectionsDetachable(false);
+		
+		Element root = new Element(searchCriteria.getPhoneNumber(), "50em", "2em");
+		root.setId(searchCriteria.getPhoneNumber());
+		model.addElement(root);
+		elementMap.put(searchCriteria.getPhoneNumber(), root);
+		int i=0, level=0;
+		for(Node node : nodes) {
+			if(level < node.getLevel()) {
+				i = 0;
+				level = node.getLevel();
+			}
+			for(Node childNode : node.getChildren()) {
+				if(!elementMap.containsKey(childNode.getPhoneNumber())) {
+					Element el = new Element(childNode.getPhoneNumber(), (2 + i*10) +"em", 8 + level*6 + "em");
+					el.setId(childNode.getPhoneNumber());
+					elementMap.put(childNode.getPhoneNumber(), el);
+					model.addElement(el);
+					i++;
 				}
 			}
-			for(int j = 0; j < results.size(); j++) {
-				arrayMap.put(results.get(j).getPhoneNumber(), j);
+		}
+		for(int j = 0; j < nodes.size(); j++) {
+			arrayMap.put(nodes.get(j).getPhoneNumber(), j);
+		}
+		
+		for(Node node : nodes) {
+			Element el1 = elementMap.get(node.getPhoneNumber());
+			if(!node.getChildren().isEmpty()) {
+				el1.addEndPoint(createEndPoint(EndPointAnchor.BOTTOM));
 			}
-			
-			for(Node node : results) {
-				Element el1 = elementMap.get(node.getPhoneNumber());
-				if(!node.getChildren().isEmpty()) {
-					el1.addEndPoint(createEndPoint(EndPointAnchor.BOTTOM));
+			for(Node childNode : node.getChildren()) {
+				Element el2 = elementMap.get(childNode.getPhoneNumber());
+				if(el2.getEndPoints() == null || el2.getEndPoints().isEmpty()) {
+					el2.addEndPoint(createEndPoint(EndPointAnchor.TOP));
 				}
-				for(Node childNode : node.getChildren()) {
-					Element el2 = elementMap.get(childNode.getPhoneNumber());
-					if(el2.getEndPoints() == null || el2.getEndPoints().isEmpty()) {
-						el2.addEndPoint(createEndPoint(EndPointAnchor.TOP));
-					}
-					EndPoint endpoint = el1.getEndPoints().size() > 1 ? el1.getEndPoints().get(1) : el1.getEndPoints().get(0);
-					model.connect(new Connection(endpoint, el2.getEndPoints().get(0), createConnector()));
-					results.get(arrayMap.get(childNode.getPhoneNumber())).getChildren().remove(node);
+				EndPoint endpoint = el1.getEndPoints().size() > 1 ? el1.getEndPoints().get(1) : el1.getEndPoints().get(0);
+				model.connect(new Connection(endpoint, el2.getEndPoints().get(0), createConnector()));
+				nodes.get(arrayMap.get(childNode.getPhoneNumber())).getChildren().remove(node);
+				if(childNode.getPhoneNumber().equals(externalPhoneNumber)) {
+					el2.setStyleClass(Constants.ELEMENT_SELECTED_STYLE_CLASS);
 				}
 			}
-			
 		}
 	}
 	
@@ -149,10 +186,15 @@ public class RelationFinderController implements Serializable {
 	public void reset() {
 		searchCriteria = new SearchCriteria();
 		model = null;
+		error = false;
 	}
 
 	public SearchCriteria getSearchCriteria() {
 		return searchCriteria;
+	}
+
+	public boolean isError() {
+		return error;
 	}
 
 }

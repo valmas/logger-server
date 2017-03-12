@@ -30,6 +30,10 @@ public class InitialRequest {
 	private int lac;
 	
 	private String rat;
+	
+	private int mnc;
+	
+	private int mcc;
 
 	private int rssi;
 
@@ -186,13 +190,29 @@ public class InitialRequest {
 	public void setRat(String rat) {
 		this.rat = rat;
 	}
+	
+	public int getMnc() {
+		return mnc;
+	}
+
+	public void setMnc(int mnc) {
+		this.mnc = mnc;
+	}
+
+	public int getMcc() {
+		return mcc;
+	}
+
+	public void setMcc(int mcc) {
+		this.mcc = mcc;
+	}
 
 	@Override
 	public String toString() {
 		return "InitialRequest [brandModel=" + brandModel + ", version=" + version + ", imei=" + imei + ", imsi=" + imsi
 				+ ", phoneNumber=" + phoneNumber + ", externalPhoneNumber=" + externalPhoneNumber + ", dateTime="
 				+ dateTime + ", smsContent=" + smsContent + ", direction=" + direction + ", cellId=" + cellId + ", lac="
-				+ lac + ", rat=" + rat + ", rssi=" + rssi + ", lteRsrp=" + lteRsrp + ", lteRsrq=" + lteRsrq
+				+ lac + ", rat=" + rat + ", mnc=" + mnc + ", mcc=" + mcc + ", rssi=" + rssi + ", lteRsrp=" + lteRsrp + ", lteRsrq=" + lteRsrq
 				+ ", lteRssnr=" + lteRssnr + ", lteCqi=" + lteCqi + ", logType=" + logType + "]";
 	}
 	
