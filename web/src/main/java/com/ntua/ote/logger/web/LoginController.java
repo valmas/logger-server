@@ -7,9 +7,9 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.ntua.ote.logger.core.common.UserSessionBean;
 import com.ntua.ote.logger.persistence.LoggerDAOImpl;
 import com.ntua.ote.logger.web.common.FacesUtil;
-import com.ntua.ote.logger.web.common.UserSessionBean;
 
 @Named
 @SessionScoped

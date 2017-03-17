@@ -3,14 +3,14 @@ package com.ntua.ote.logger.persistence;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
@@ -18,6 +18,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
@@ -31,17 +32,18 @@ import com.ntua.ote.logger.core.models.SearchCriteria;
 import com.ntua.ote.logger.core.models.SearchResults;
 import com.ntua.ote.logger.persistence.jpa.Log;
 import com.ntua.ote.logger.persistence.jpa.Log_;
-import com.ntua.ote.logger.persistence.jpa.Users;
-import com.ntua.ote.logger.persistence.jpa.Users_;
 
 @ApplicationScoped
 public class LoggerDAOImpl implements LoggerDAO {
 
 	@PersistenceContext(unitName = "logger")
 	private EntityManager entityManager;
-
+	
+	@Resource 
+	private UserTransaction userTransaction;
+	
 	private static final Logger LOGGER = Logger.getLogger(LoggerDAOImpl.class);
-
+	
 	@Override
 	public long addLog(Log log) {
 		// EntityTransaction transaction = entityManager.getTransaction();
@@ -51,6 +53,7 @@ public class LoggerDAOImpl implements LoggerDAO {
 
 			entityManager.flush();
 			// transaction.commit();
+			
 			return log.getId();
 		} catch (Exception e) {
 			LOGGER.error("<add Log> :", e);
@@ -58,6 +61,26 @@ public class LoggerDAOImpl implements LoggerDAO {
 		}
 	}
 
+	@Override
+	public int updateLocation(long id, double longitude, double latitude) {
+		try {
+			Log log = entityManager.find(Log.class, id);
+			if (log != null) {
+				log.setLongitude(longitude);
+				log.setLatitude(latitude);
+				log.setRadius(0);
+				entityManager.flush();
+				return 1;
+			} else {
+				LOGGER.error("<updateLocation> id not found");
+				return -1;
+			}
+		} catch (Exception e) {
+			LOGGER.error("<updateLocation> :", e);
+			return -1;
+		}
+	}
+	
 	@Override
 	public int updateLocation(long id, double longitude, double latitude, double radius) {
 		try {

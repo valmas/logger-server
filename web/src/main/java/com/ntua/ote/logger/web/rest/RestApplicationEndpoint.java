@@ -29,7 +29,7 @@ public class RestApplicationEndpoint {
 	
 	@Inject
 	private LoggerDAO loggerDAO;
-
+	
 	@POST
 	@Consumes("application/json")
 	@Produces("application/json")
@@ -69,7 +69,7 @@ public class RestApplicationEndpoint {
     public int locationLogging(LocationRequest locationRequest) {
 		LOGGER.info("<locationLogging> invoked" + locationRequest);
 		if(locationRequest.isLocated()) {
-			return loggerDAO.updateLocation(locationRequest.getRowId(), locationRequest.getLongitude(), locationRequest.getLatitude(), 0);
+			return loggerDAO.updateLocation(locationRequest.getRowId(), locationRequest.getLongitude(), locationRequest.getLatitude());
 		} else {
 			/*final long id = locationRequest.getRowId();
 			new Thread(new Runnable() {

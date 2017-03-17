@@ -8,6 +8,8 @@ public interface LoggerDAO {
 	
 	int updateLocation(long id, double longitude, double latitude, double radius);
 	
+	int updateLocation(long id, double longitude, double latitude);
+	
 	int updateDuration(long id, int duration);
 	
 	Log get(Long id);

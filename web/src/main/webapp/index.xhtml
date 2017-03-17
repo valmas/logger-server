@@ -45,17 +45,17 @@
 				<p:commandButton rendered="#{log.mapable}" icon="fa fa-map-marker" action="#{welcomeController.goToMap(log)}" 
 					update="contentForm:infoPopup" ajax="false" style="float:left;"/> 
 				
-				<p:commandButton icon="fa fa-info-circle" action="#{welcomeController.setSelectedLog(log)}" 
+				<p:commandButton icon="fa fa-info-circle" action="#{userSessionBean.setSelectedLog(log)}" 
 					oncomplete="PF('popup').show();" update="contentForm:infoPopup" style="float:right;"/> 
 			</p:column>
 	    </p:dataTable>
 	    
-	    <p:poll interval="10" listener="#{welcomeController.refresh()}" update="newest_logs" />
+	    <p:poll interval="5" listener="#{welcomeController.refresh()}" update="newest_logs" />
 	    
-	    <n:logInfoPopup value="#{welcomeController.selectedLog}"/>
+	    <n:logInfoPopup value="#{userSessionBean.selectedLog}"/>
 	    
 	    <p:remoteCommand name="pageLoaded" update="newest_logs"
-                actionListener="#{welcomeController.refresh()}"/>
+                actionListener="#{welcomeController.init()}"/>
 	</ui:define>
 </ui:composition>
 </html>

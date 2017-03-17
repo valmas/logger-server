@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import com.ntua.ote.logger.web.common.UserSessionBean;
+import com.ntua.ote.logger.core.common.UserSessionBean;
 
 /**
  * The Class that filters all the requests on VLS portal web
