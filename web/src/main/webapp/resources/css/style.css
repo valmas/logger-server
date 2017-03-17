@@ -64,6 +64,69 @@
 	margin-bottom: 5px;
 }
 
+.logoStyle {
+	top: -25px;
+	position: absolute;
+	left: 20px;
+}
+
+.logoutStyle {
+	float:right !important; 
+	top:12px; 
+	color:lightgray;
+	right: 10px;
+}
+
+.ui-button, button.ui-button.ui-state-default, .ui-button.ui-state-default {
+    border: 1px solid #1f89ce;
+    color: #fff;
+    background: #2399e5;
+    -webkit-box-shadow: unset;
+	box-shadow: unset;
+}
+
+.ui-button, button.ui-button.ui-state-hover, .button.ui-button.ui-state-hover
+ button.ui-button.ui-state-focus, .button.ui-button.ui-state-focus {
+ 	border: 1px solid #156090;
+    outline: none;
+    background: #1f89ce;
+    -webkit-box-shadow: unset;
+	box-shadow: unset;
+ }
+ 
+ .ui-panel {
+    border: 0;
+    border-bottom: 3px solid #313b3f;
+}
+
+.ui-widget-header {
+	border: 0;
+	background: #313b3f;
+	color:white;
+	text-shadow: unset;
+}
+
+.ui-panel .ui-panel-titlebar-icon,
+.ui-panel .ui-panel-titlebar-icon:focus {
+	border: 1px solid #1f89ce;
+    color: #fff;
+    background: #2399e5;
+    -webkit-box-shadow: unset;
+	box-shadow: unset;
+}
+
+.ui-panel .ui-panel-titlebar-icon:hover {
+	border: 1px solid #156090;
+    outline: none;
+    background: #1f89ce;
+    -webkit-box-shadow: unset;
+	box-shadow: unset;
+}
+
+.ui-state-default .ui-icon {
+	background-image: url("/logger/server/javax.faces.resource/images/ui-icons_ffffff_256x240.png.xhtml?ln=primefaces-aristo");
+}
+
 /* Menu */
 @import url(http://fonts.googleapis.com/css?family=Raleway);
 #cssmenu,
@@ -92,12 +155,14 @@
 }
 #cssmenu {
   width: auto;
-  border-bottom: 3px solid #47c9af;
+  border-bottom: 3px solid #2399e5;
   font-family: Raleway, sans-serif;
   line-height: 1;
+  padding-top:40px; 
+  background-color:#313b3f;
 }
 #cssmenu ul {
-  background: #ffffff;
+  background: #313b3f;
 }
 #cssmenu > ul > li {
   float: left;
@@ -123,7 +188,7 @@
   font-size: 15px;
   font-weight: 400;
   text-decoration: none;
-  color: #444444;
+  color: lightgrey;
   -webkit-transition: all .2s ease;
   -moz-transition: all .2s ease;
   -ms-transition: all .2s ease;
@@ -160,7 +225,7 @@
 #cssmenu > ul > li.active > a:after,
 #cssmenu > ul > li:hover > a:after,
 #cssmenu > ul > li > a:hover:after {
-  background: #47c9af;
+  background: #2399e5;
 }
 
 /* Search criteria panel*/
@@ -169,8 +234,14 @@
 	z-index:3; 
 	top: 90px; 
 	padding: 0; 
-	width:99%
+	width:99.5%
 }
+
+.resultPanel {
+	margin-top: 40px;
+	z-index: 1;
+}
+
 
 /* Diagram */
 
@@ -184,7 +255,7 @@
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
     border-radius: 6px;
     border: 1px solid transparent;
-    background-color: #47c9af;
+    background-color: #2399e5;
     color: #ffffff;
     z-index:2; 
 }

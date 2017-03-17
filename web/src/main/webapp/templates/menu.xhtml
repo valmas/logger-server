@@ -9,11 +9,11 @@
 	<div id="menu_wrapper">
 		<div id="cssmenu">
 			<ul>
-				<li class="#{menuController.menuEntries[0]}">
-					<h:commandLink id="btn_0" action="home" value="Home" 
-						actionListener="#{menuController.listener}" />
-				</li>
-				<li class="#{menuController.menuEntries[1]}">
+				<h:commandLink id="btn_0" action="home" styleClass="logoStyle"
+					actionListener="#{menuController.listener}">
+					<h:graphicImage name="logo.png" library="images"/>
+				</h:commandLink>
+				<li class="#{menuController.menuEntries[1]}" style="margin-left:150px">
 					<h:commandLink id="btn_1" action="#{mapController.init()}" value="Map Search" 
 						actionListener="#{menuController.listener}"/>
 				</li>
@@ -25,7 +25,7 @@
 					<h:commandLink id="btn_3" action="#{relationFinderController.init()}" value="Relation Finder" 
 						actionListener="#{menuController.listener}"/>
 				</li>
-				<li style="float:right; top:20px;">
+				<li class="logoutStyle">
 					<p:outputLabel value="User: #{userSessionBean.userName}" style="margin-right:20px"/>
 					<p:commandButton value="Logout" ajax="false" action="#{loginController.logout()}" 
 						icon="fa fa-sign-out" />

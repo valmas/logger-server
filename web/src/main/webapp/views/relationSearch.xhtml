@@ -80,10 +80,10 @@
 				
 		</p:panel>
 		
-		<h:panelGrid id="relation_results_panel" columns="1" style="margin-top:60px; z-index:1"
+		<h:panelGrid id="relation_results_panel" columns="1" styleClass="resultPanel"
 			columnClasses="map_panel_left" width="100%">
 			
-			<p:diagram id="relationDiagram" value="#{relationFinderController.model}" style="height:600px" 
+			<p:diagram id="relationDiagram" value="#{relationFinderController.model}" style="border:0; height:80vh;" 
 				styleClass="ui-widget-content" rendered="#{not empty relationFinderController.model}" />
 		    
 		    <p:remoteCommand name="elementClicked" update="relation_results_panel"
