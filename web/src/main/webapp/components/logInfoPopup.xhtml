@@ -11,7 +11,7 @@
 	<p:dialog id="infoPopup" header="Log Details" widgetVar="popup" showEffect="explode" 
        	modal="true" hideEffect="explode">
        	
-      		<p:fieldset legend="Basic Details" >
+      		<p:panel header="Basic Details" >
       		
       			<n:callSmsDirection log="#{value}"/>
       			
@@ -27,9 +27,9 @@
 		    		rendered="#{value.logType == 'SMS'}"/>
 		    </h:panelGrid>
 	    	
-    	</p:fieldset>
+    	</p:panel>
     	
-    	<p:fieldset legend="Phone details" >
+    	<p:panel header="Phone details" >
       			<h:panelGrid columns="2">
       				<n:twoLabels label="Brand / Model" value="#{value.brandModel}"/>
       			
@@ -39,9 +39,9 @@
 		    	
 				<n:twoLabels label="IMSI (International Mobile Subscriber Identity)" value="#{value.imsi}"/>
 	    	</h:panelGrid>
-    	</p:fieldset>
+    	</p:panel>
     	
-    	<p:fieldset legend="Network details" >
+    	<p:panel header="Network details" >
       			<h:panelGrid columns="2">
       				<n:twoLabels label="RAT (Radio access technology)" value="#{value.rat}"/>
       				
@@ -51,7 +51,7 @@
 		    	
 		    	<n:twoLabels label="RSSI (Received signal strength indication)" value="#{value.rssi}"/>
 	    	</h:panelGrid>
-	    	<p:fieldset legend="LTE details" >
+	    	<p:panel header="LTE details" >
        			<h:panelGrid columns="2">
        				<n:twoLabels label="RSRP (Reference Signal Received Power)" value="#{value.lteRSRP}"/>
        			
@@ -61,8 +61,8 @@
 			    	
 			    	<n:twoLabels label="CQI (Channel Quality Indicator)" value="#{value.lteCQI}"/>
 		    	</h:panelGrid>
-	    	</p:fieldset>
+	    	</p:panel>
 	    	
-    	</p:fieldset>
+    	</p:panel>
 	</p:dialog>
 </ui:composition>

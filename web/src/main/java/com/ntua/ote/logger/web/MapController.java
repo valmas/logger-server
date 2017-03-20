@@ -98,6 +98,7 @@ public class MapController implements Serializable {
 				error = true;
 			}
 		}
+		searchCriteria.setId(0);
 	}
 	
 	private boolean validation(SearchCriteria searchCriteria){

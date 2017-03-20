@@ -127,6 +127,102 @@
 	background-image: url("/logger/server/javax.faces.resource/images/ui-icons_ffffff_256x240.png.xhtml?ln=primefaces-aristo");
 }
 
+.ui-datatable thead th {
+	border: 0 !important;
+	background: #313b3f;
+	color:white;
+	text-shadow: unset;
+}
+
+.ui-datatable tbody td {
+	border: 0 !important;
+}
+
+.ui-datatable tbody.ui-datatable-data{
+	border: 0 !important;
+}
+
+.ui-widget-content tr {
+	border: 0 !important;
+}
+
+.newstLogs>div>table {
+	border-bottom: 3px solid !important;
+}
+
+.ui-state-highlight, .ui-widget-content 
+.ui-state-highlight, .ui-widget-header 
+.ui-state-highlight {
+	text-shadow: none;
+	background: #4b647d;
+}
+
+.datatable-no-header>div>table {
+	border-bottom: 3px solid !important;
+}
+
+.mapArrayButton:hover {
+	border: 1px solid #156090 !important;
+    outline: none !important;
+    background: #1f89ce !important;
+    -webkit-box-shadow: unset !important;
+	box-shadow: unset !important;
+	color:white !important;
+}
+
+.datatable-no-header  .ui-widget-content .ui-state-hover {
+	box-shadow: none;
+	background: #64c5ff;
+	color:black;
+}
+
+.ui-dialog .ui-dialog-titlebar-close {
+	border: 0;
+    background: #2399e5;
+    -webkit-box-shadow: unset;
+	box-shadow: unset;
+	padding: 1px !important;
+}
+
+.ui-dialog .ui-dialog-titlebar-close:hover {
+	border: 0;
+    background: #1f89ce;
+    -webkit-box-shadow: unset;
+	box-shadow: unset;
+}
+
+.ui-dialog .ui-dialog-titlebar-close span {
+	background-image: url("/logger/server/javax.faces.resource/images/ui-icons_ffffff_256x240.png.xhtml?ln=primefaces-aristo");
+}
+
+.ui-dialog .ui-dialog-titlebar-close span:hover {
+	background-image: url("/logger/server/javax.faces.resource/images/ui-icons_ffffff_256x240.png.xhtml?ln=primefaces-aristo");
+}
+
+.ui-selectonemenu .ui-selectonemenu-trigger {
+	border: 1px solid #1f89ce;
+    color: #fff;
+    background: #2399e5;
+    -webkit-box-shadow: unset;
+	box-shadow: unset;
+}
+
+.selectOne {
+	box-shadow: none !important;
+}
+
+.ui-selectonemenu-items-wrapper .ui-widget-content .ui-state-hover {
+	background: #64c5ff;
+	color:black;
+	box-shadow: none;
+}
+
+.ui-selectonemenu-items-wrapper .ui-widget-content .ui-state-highlight {
+	background: #4b647d;
+	color:white;
+	box-shadow: none;
+}
+
 /* Menu */
 @import url(http://fonts.googleapis.com/css?family=Raleway);
 #cssmenu,

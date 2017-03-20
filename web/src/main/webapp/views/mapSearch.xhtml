@@ -98,7 +98,7 @@
 				    </h:outputScript>
 				</h:panelGroup>
 					
-				<p:commandButton value="Reset" update="map_results_panel map_search_panel"
+				<p:commandButton value="Reset" update="map_results_panel map_search_panel locationPopup"
 					action="#{mapController.reset()}" icon="fa fa-fw fa-remove" />
 			</h:panelGroup>
 				
@@ -160,7 +160,7 @@
 		    
 				<p:dataTable id="table" value="#{mapController.logs}" var="log" scrollable="true"  
 					selectionMode="single" selection="#{mapController.selectedLog}" rowKey="#{log}" scrollHeight="550" 
-					disabledSelection="#{!log.mapable}" styleClass="datatable-no-header">
+					disabledSelection="#{!log.mapable}" styleClass="datatable-no-header mapSearchTable">
 	
 					<p:column headerText="" style="border-right-style: none;">
 						<h:panelGrid columns="3" columnClasses="noTableMarker,noTable,noTableButton">
@@ -177,7 +177,7 @@
 								</h:outputText>
 							</h:panelGroup>
 							<p:commandButton style="float:right" icon="fa fa-info-circle" action="#{mapController.setSelectedLog(log)}" 
-								oncomplete="PF('popup').show();" update="contentForm:infoPopup" /> 
+								oncomplete="PF('popup').show();" update="contentForm:infoPopup" styleClass="mapArrayButton" /> 
 						</h:panelGrid>
 					</p:column>
 					
