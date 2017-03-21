@@ -89,7 +89,7 @@ public class RestApplicationEndpoint {
 			}).start();*/
 			Log log = loggerDAO.get(locationRequest.getRowId());
 			GeolocateResponse geolocateResponse = GeolocateService.geolocate(log);
-			if(geolocateResponse != null) {
+			if(geolocateResponse != null && geolocateResponse.getError() == null) {
 				loggerDAO.updateLocation(locationRequest.getRowId(), geolocateResponse.getLocation().getLng(), geolocateResponse.getLocation().getLat(),  
 					geolocateResponse.getAccuracy());
 			}
