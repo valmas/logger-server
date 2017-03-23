@@ -8,7 +8,6 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 
-import com.ntua.ote.logger.core.common.UserSessionBean;
 import com.ntua.ote.logger.core.models.LogDetails;
 import com.ntua.ote.logger.core.models.SearchCriteria;
 import com.ntua.ote.logger.persistence.LoggerDAOImpl;

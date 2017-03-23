@@ -10,7 +10,6 @@ import java.util.Set;
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
@@ -225,7 +224,7 @@ public class LoggerDAOImpl implements LoggerDAO {
 				Predicate andClause = cb.and(predicates.toArray(new Predicate[predicates.size()]));
 				query.where(andClause);
 			}
-			
+			query.orderBy(cb.asc(sm.get(Log_.dateTime)));
 			List<Log> logs = entityManager.createQuery(query).getResultList();
 			return convertLog(logs);
 		} catch (Exception e) {

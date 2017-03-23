@@ -7,19 +7,30 @@
     xmlns:ui="http://java.sun.com/jsf/facelets">
     
 <ui:composition template="/templates/super.xhtml">
-	<ui:define name="menu"/>
+	<ui:define name="menu">
+		<div id="menu_wrapper">
+			<div id="cssmenu" style="height:89px;">
+				<ul>
+					<h:commandLink id="btn_0" action="home" styleClass="logoStyle"
+						actionListener="#{menuController.listener}">
+						<h:graphicImage name="logo.png" library="images"/>
+					</h:commandLink>
+				</ul>
+			</div>
+		</div>
+	</ui:define>
 	<ui:define name="content">
 		
-		<p:panel styleClass="loginPanel" header="Welcome to Logger Server">
+		<p:panel styleClass="loginPanel" header="#{bundle['welcome.message']}">
 			<p:messages/>
 			<h:panelGrid columns="2" columnClasses="none,loginRight" styleClass="loginGrid">
-				<n:input label="Username " value="#{loginController.userName}"/>
+				<n:input label="#{bundle['login.username']} " value="#{loginController.userName}"/>
 				
-				<h:outputText value="Password " />
+				<h:outputText value="#{bundle['login.password']}" />
         		<p:password id="nonFeedback" value="#{loginController.password}" />
 			</h:panelGrid>		
 			
-			<p:commandButton value="Login" ajax="false" action="#{loginController.login()}" 
+			<p:commandButton value="#{bundle['login.btn']}" ajax="false" action="#{loginController.login()}" 
 				icon="fa fa-sign-in"/>
 		</p:panel>
 	</ui:define>

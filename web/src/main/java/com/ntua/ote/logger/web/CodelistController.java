@@ -7,6 +7,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
+import com.ntua.ote.logger.web.common.FacesUtil;
+
 @Named
 @ApplicationScoped
 public class CodelistController {
@@ -19,12 +21,12 @@ public class CodelistController {
 	@PostConstruct
 	public void init(){
 		directions = new ArrayList<>();
-		directions.add("Incoming");
-		directions.add("Outgoing");
+		directions.add(FacesUtil.getMessage("codelist.incoming"));
+		directions.add(FacesUtil.getMessage("codelist.outgoing"));
 		
 		types = new ArrayList<>();
-		types.add("Call");
-		types.add("SMS");
+		types.add(FacesUtil.getMessage("codelist.call"));
+		types.add(FacesUtil.getMessage("codelist.sms"));
 	}
 
 	public List<String> getDirections(){

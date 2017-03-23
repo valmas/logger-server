@@ -15,6 +15,8 @@ import com.ntua.ote.logger.web.common.FacesUtil;
 @SessionScoped
 public class LoginController implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	private String userName;
 	
 	private String password;
@@ -31,7 +33,7 @@ public class LoginController implements Serializable {
 			userSessionBean.setUserName(userName);
 			return "home";
 		} else {
-			FacesUtil.addErrorMessage("Authentication failed. Please try again", null, false);
+			FacesUtil.addErrorMessage(FacesUtil.getMessage("error.authentication"), null, false);
 			return null;
 		}
 		

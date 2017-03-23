@@ -25,29 +25,30 @@
 
 	<ui:define name="content">
 		<p:panel id="map_path_search_panel" toggleSpeed="500" toggleable="true" widgetVar="panel" 
-			styleClass="searchPanel" header="Search Criteria">
+			styleClass="searchPanel" header="#{bundle['search.criteria.title']}">
 			<p:messages />
 			<h:panelGrid columns="3">
 				<h:panelGrid columns="2">
 					
 					
-					<n:manyInputSelect label="Phone Number" databean="#{mapPathController.inputs}"/>
+					<n:manyInputSelect label="#{bundle['log.details.phoneNumber']}" databean="#{mapPathController.inputs}"/>
 				
 				</h:panelGrid>
 				
 				<h:panelGrid columns="2">
 					
-					<n:calendar label="Date from" value="#{mapPathController.searchCriteria.dateFrom}"
-						type="dateTime" required="true"/>
+					<n:calendar label="#{bundle['search.criteria.date.from']}" 
+						value="#{mapPathController.searchCriteria.dateFrom}"  type="dateTime" required="true"/>
 					
-					<n:calendar label="Date to" value="#{mapPathController.searchCriteria.dateTo}"
-						type="dateTime"/>
+					<n:calendar label="#{bundle['search.criteria.date.to']}" 
+						value="#{mapPathController.searchCriteria.dateTo}" type="dateTime"/>
 				
 				</h:panelGrid>
 				
 			</h:panelGrid>
-			<p:commandButton id="doValidateAndSearch" value="Search" update="@form afterLoad" action="#{mapPathController.search()}" 
-				oncomplete="toggle(args &amp;&amp; !args.validationFailed)" icon="fa fa-fw fa-search" />
+			<p:commandButton id="doValidateAndSearch" value="#{bundle['search.btn']}" update="@form afterLoad" 
+				action="#{mapPathController.search()}" icon="fa fa-fw fa-search"
+				oncomplete="toggle(args &amp;&amp; !args.validationFailed)"/>
 			<h:panelGroup id="afterLoad">
 			    <h:outputScript>
 			        function toggle(validationFailed) {    
@@ -57,7 +58,7 @@
 			        }
 			    </h:outputScript>
 			</h:panelGroup>
-			<p:commandButton value="Reset" update="map_results_panel map_path_search_panel"
+			<p:commandButton value="#{bundle['reset.btn']}" update="map_results_panel map_path_search_panel"
 				action="#{mapPathController.reset()}" icon="fa fa-fw fa-remove"/>
 				
 		</p:panel>
@@ -99,6 +100,7 @@
 			    
 			    <h:inputHidden id="lat" value="#{mapPathController.latitude}" />
 				<h:inputHidden id="lng" value="#{mapPathController.longitude}" />
+				<h:inputHidden id="mlsRadius" value="#{mapController.radius}" />
 			  	
 	        </h:panelGroup>
 	        

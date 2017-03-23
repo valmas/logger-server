@@ -128,10 +128,10 @@ function openInfoWindow() {
           document.getElementById("contentForm:infoWindow_content").innerHTML = results[1].formatted_address;
           //alert(results[1].formatted_address);
         } else {
-          window.alert('No results found');
+          //window.alert('No results found');
         }
       } else {
-        window.alert('Geocoder failed due to: ' + status);
+        //window.alert('Geocoder failed due to: ' + status);
       }
     });
 
@@ -153,10 +153,10 @@ function reverseGeocode(){
 	        	
 	          //alert(results[1].formatted_address);
 	        } else {
-	          window.alert('No results found');
+	          //window.alert('No results found');
 	        }
 	      } else {
-	        window.alert('Geocoder failed due to: ' + status);
+	        //window.alert('Geocoder failed due to: ' + status);
 	      }
 	    });
 	}

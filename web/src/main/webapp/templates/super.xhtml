@@ -4,7 +4,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:p="http://primefaces.org/ui">
-<f:view> 
+<f:view locale="#{localeManager.locale}"> 
 
 	<h:outputStylesheet library="css" name="style.css"  />
 <h:head>
@@ -18,6 +18,16 @@
 <h:body style="margin:0;">
   <div id="main">
     <h:form id="contentForm">
+	<div class="language">
+		<h:outputLabel value="#{bundle['language.label']}:" />
+		<h:commandLink id="en_lang" action="#{localeManager.setLanguage('en')}" >
+			<h:graphicImage library="images" name="lang_en.png" style="border:none"/>
+		</h:commandLink>
+		<p:spacer width="10"/>
+		<h:commandLink id="gr_lang" action="#{localeManager.setLanguage('gr')}" >
+			<h:graphicImage library="images" name="lang_gr.gif" style="border:none"/>
+		</h:commandLink>
+	</div>
     <ui:insert name="menu">
     	<ui:include src="/templates/menu.xhtml" />
     </ui:insert>
@@ -30,7 +40,7 @@
     </h:form>
     <div id="content_footer"></div>
     <div id="footer" style="bottom: 5px; position: fixed;">
-      Copyright (c)2016-2017 Server Logger #{maven.project.version}
+      #{bundle['footer.message']}  #{maven.project.version}
     </div>
   </div>
 </h:body>

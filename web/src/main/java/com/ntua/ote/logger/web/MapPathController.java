@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -73,8 +74,30 @@ public class MapPathController implements Serializable {
 				List<LogDetails> partialLogs = dao.searchPath(searchCriteria);		
 				
 				Polyline polyline = new Polyline();
-				for(LogDetails log : partialLogs) {
-					if(Utils.hasLocation(log)) {
+				int start = 0;
+				String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+				if(partialLogs.size() > 1) {
+					start = 1;
+					LogDetails startLog = partialLogs.get(0);
+					LatLng loc = new LatLng(startLog.getLatitude(), startLog.getLongitude());		
+					advancedModel.addOverlay(new Marker(loc, Utils.getMarkerTitle(startLog), startLog, 
+							contextPath + Constants.BLUE_MARKER_START_ICON));
+					
+					LogDetails endLog = partialLogs.get(partialLogs.size() - 1);
+					loc = new LatLng(endLog.getLatitude(), endLog.getLongitude());		
+					advancedModel.addOverlay(new Marker(loc, Utils.getMarkerTitle(endLog), endLog, 
+							contextPath + Constants.BLUE_MARKER_END_ICON));
+					
+				}
+				for(int i = start; i < partialLogs.size() - start; i++) {
+					LogDetails log = partialLogs.get(i);
+					LatLng loc = new LatLng(log.getLatitude(), log.getLongitude());	
+					advancedModel.addOverlay(new Marker(loc, Utils.getMarkerTitle(log), log, 
+							contextPath + Constants.BLUE_MARKER_ICON));
+				}
+				
+				if(partialLogs.size() > 1) {
+					for(LogDetails log : partialLogs) {
 						LatLng loc = new LatLng(log.getLatitude(), log.getLongitude());		
 				        polyline.getPaths().add(loc);
 				        polyline.setStrokeWeight(10);
@@ -82,8 +105,6 @@ public class MapPathController implements Serializable {
 				        polyline.setStrokeOpacity(0.7);
 				        
 						advancedModel.addOverlay(polyline);
-						
-						advancedModel.addOverlay(new Marker(loc, Utils.getMarkerTitle(log), log, Constants.BLUE_MARKER_ICON));
 					}
 				}
 				logs.addAll(partialLogs);
@@ -91,7 +112,7 @@ public class MapPathController implements Serializable {
 			if(!logs.isEmpty()) {
 				mapCenter = logs.get(0).getLatitude() + "," + logs.get(0).getLongitude();
 			} else {
-				FacesUtil.addInfoMessage("No records found for the provided criteria", null, false);
+				FacesUtil.addInfoMessage(FacesUtil.getMessage("error.no.records"), null, false);
 				error = true;
 			}
 		}
@@ -100,7 +121,7 @@ public class MapPathController implements Serializable {
 	private boolean validation(SearchCriteria searchCriteria){
 		if(searchCriteria.getDateFrom() != null && searchCriteria.getDateTo() != null
 				&& searchCriteria.getDateFrom().after(searchCriteria.getDateTo())) {
-			FacesUtil.addErrorMessage("Date from must be after date to", null, false);
+			FacesUtil.addErrorMessage(FacesUtil.getMessage("error.date"), null, false);
 			error = true;
 			return false;
 		}

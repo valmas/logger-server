@@ -2,11 +2,8 @@ package com.ntua.ote.logger.web;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -16,10 +13,8 @@ import org.primefaces.model.diagram.Connection;
 import org.primefaces.model.diagram.DefaultDiagramModel;
 import org.primefaces.model.diagram.DiagramModel;
 import org.primefaces.model.diagram.Element;
-import org.primefaces.model.diagram.connector.BezierConnector;
 import org.primefaces.model.diagram.connector.Connector;
 import org.primefaces.model.diagram.connector.StraightConnector;
-import org.primefaces.model.diagram.endpoint.BlankEndPoint;
 import org.primefaces.model.diagram.endpoint.DotEndPoint;
 import org.primefaces.model.diagram.endpoint.EndPoint;
 import org.primefaces.model.diagram.endpoint.EndPointAnchor;
@@ -31,7 +26,6 @@ import com.ntua.ote.logger.core.models.SearchCriteria;
 import com.ntua.ote.logger.core.models.SearchResults;
 import com.ntua.ote.logger.persistence.LoggerDAOImpl;
 import com.ntua.ote.logger.web.common.FacesUtil;
-import com.sun.faces.util.CollectionsUtils;
 
 @Named
 @SessionScoped
@@ -66,15 +60,15 @@ public class RelationFinderController implements Serializable {
 			List<Node> nodes = results.getNodes();
 			if(!nodes.isEmpty() && nodes.size() > 1) {
 				if(StringUtils.hasLength(searchCriteria.getExternalPhoneNumber()) && !results.isRelationFound()) {
-					FacesUtil.addInfoMessage("No relation found between " + searchCriteria.getPhoneNumber() + 
-							" and " + searchCriteria.getExternalPhoneNumber(), null, false);
+					FacesUtil.addInfoMessage(FacesUtil.getMessage("error.no.relation") + searchCriteria.getPhoneNumber() + 
+							" - " + searchCriteria.getExternalPhoneNumber(), null, false);
 					error = true;
 					model = null;
 				} else {
 					constructTree(results, searchCriteria.getExternalPhoneNumber());
 				}
 			} else {
-				FacesUtil.addInfoMessage("No records found for the provided phone number", null, false);
+				FacesUtil.addInfoMessage(FacesUtil.getMessage("error.relation.no.records"), null, false);
 				error = true;
 				model = null;
 			}
@@ -84,7 +78,7 @@ public class RelationFinderController implements Serializable {
 	private boolean validation(SearchCriteria searchCriteria){
 		if(searchCriteria.getDateFrom() != null && searchCriteria.getDateTo() != null
 				&& searchCriteria.getDateFrom().after(searchCriteria.getDateTo())) {
-			FacesUtil.addErrorMessage("Date from must be after date to", null, false);
+			FacesUtil.addErrorMessage(FacesUtil.getMessage("error.date"), null, false);
 			error = true;
 			return false;
 		}

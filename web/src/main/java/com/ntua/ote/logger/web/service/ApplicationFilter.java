@@ -31,11 +31,6 @@ public class ApplicationFilter implements Filter {
 	private UserSessionBean userSessionBean;
 
 	/**
-     * If the url of the request received ends with VIISP and contains a ticket as a parameter then it
-     * is a postback from VIISP (the final step in VIISP authentication). The filter invokes ESB through 
-     * LogInEJB and if it is successful login the user. Also keeps user's VIISP detailed which are required 
-     * in order for the user to SSO to partners' systems 
-     * <p> 
      * If in the user is already authenticated then the request is forwarded
      * else the request is dropped and the user is redirected in the login page
      * 
@@ -53,17 +48,11 @@ public class ApplicationFilter implements Filter {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.Filter#destroy()
-	 */
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
+
 	}
 
-	/* (non-Javadoc)
-	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
-	 */
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
 	}

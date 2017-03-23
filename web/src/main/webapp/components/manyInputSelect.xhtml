@@ -22,7 +22,7 @@
 	<p:spacer width="1"/>
 	
 	<p:dataList id="data_list" value="#{databean.inputs}" var="item" type="unordered" itemType="none"
-		emptyMessage="No phone numbers selected.">
+		emptyMessage="#{bundle['multi.select.empty.message']}">
 		<p:spacer width="30" height="8" style="background-color: #{item.color}; margin-bottom: 1px;"/>
         <h:outputText value="#{item.input}" style="margin-left:5px"/>
         <p:commandLink style="float:right; margin-right:10px" action="#{databean.remove(item)}" update="data_list">

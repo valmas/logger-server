@@ -14,20 +14,20 @@
 					<h:graphicImage name="logo.png" library="images"/>
 				</h:commandLink>
 				<li class="#{menuController.menuEntries[1]}" style="margin-left:150px">
-					<h:commandLink id="btn_1" action="#{mapController.init()}" value="Map Search" 
+					<h:commandLink id="btn_1" action="#{mapController.init()}" value="#{bundle['menu.map.search']}" 
 						actionListener="#{menuController.listener}"/>
 				</li>
 				<li class="#{menuController.menuEntries[2]}">
-					<h:commandLink id="btn_2" action="#{mapPathController.init()}" value="Map Path Search" 
+					<h:commandLink id="btn_2" action="#{mapPathController.init()}" value="#{bundle['menu.map.path.search']}" 
 						actionListener="#{menuController.listener}"/>
 				</li>
 				<li class="#{menuController.menuEntries[3]}">
-					<h:commandLink id="btn_3" action="#{relationFinderController.init()}" value="Relation Finder" 
+					<h:commandLink id="btn_3" action="#{relationFinderController.init()}" value="#{bundle['menu.relation.finder']}" 
 						actionListener="#{menuController.listener}"/>
 				</li>
 				<li class="logoutStyle">
-					<p:outputLabel value="User: #{userSessionBean.userName}" style="margin-right:20px"/>
-					<p:commandButton value="Logout" ajax="false" action="#{loginController.logout()}" 
+					<p:outputLabel value="#{bundle['menu.user']}: #{userSessionBean.userName}" style="margin-right:20px"/>
+					<p:commandButton value="#{bundle['logout.btn']}" ajax="false" action="#{loginController.logout()}" 
 						icon="fa fa-sign-out" />
 				</li>
 			</ul>

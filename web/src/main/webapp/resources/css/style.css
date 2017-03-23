@@ -223,6 +223,24 @@
 	box-shadow: none;
 }
 
+.ui-datepicker {
+	padding:0 !important;
+}
+
+.ui-datepicker .ui-datepicker-header {
+	background: #313b3f;
+	color:white;
+	text-shadow: unset;
+}
+
+.ui-datepicker .ui-datepicker-next-hover {
+	box-shadow: none !important;
+}
+
+.ui-datepicker .ui-datepicker-prev-hover {
+	box-shadow: none !important;
+}
+
 /* Menu */
 @import url(http://fonts.googleapis.com/css?family=Raleway);
 #cssmenu,
@@ -376,4 +394,14 @@
 	padding-bottom: 10px;
 }
 
+/* Language */
+
+.language {
+	position: relative;
+	z-index: 1;
+	float: right;
+	color: lightgrey;
+	top: 10px;
+	margin-right: 10px;
+}
 
