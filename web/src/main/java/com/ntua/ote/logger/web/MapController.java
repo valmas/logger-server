@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -80,11 +81,12 @@ public class MapController implements Serializable {
 			boolean add = false;
 			markersMap = new HashMap<>();
 			advancedModel = new DefaultMapModel();
-			if(!logs.isEmpty()) {			
+			if(!logs.isEmpty()) {
+				String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
 				for(LogDetails log : logs) {
 					if(Utils.hasLocation(log)) {
 						LatLng loc = new LatLng(log.getLatitude(), log.getLongitude());
-						Marker marker = new Marker(loc, Utils.getMarkerTitle(log), log, Constants.BLUE_MARKER_ICON);
+						Marker marker = new Marker(loc, Utils.getMarkerTitle(log), log, contextPath + Constants.BLUE_MARKER_ICON);
 						advancedModel.addOverlay(marker);
 						markersMap.put(log.getId(), marker);
 						if(!add) {
@@ -94,7 +96,7 @@ public class MapController implements Serializable {
 					}
 				}	
 			} else {
-				FacesUtil.addInfoMessage("No records found for the provided criteria", null, false);
+				FacesUtil.addInfoMessage(FacesUtil.getMessage("error.no.records"), null, false);
 				error = true;
 			}
 		}
@@ -104,7 +106,7 @@ public class MapController implements Serializable {
 	private boolean validation(SearchCriteria searchCriteria){
 		if(searchCriteria.getDateFrom() != null && searchCriteria.getDateTo() != null
 				&& searchCriteria.getDateFrom().after(searchCriteria.getDateTo())) {
-			FacesUtil.addErrorMessage("Date from must be after date to", null, false);
+			FacesUtil.addErrorMessage(FacesUtil.getMessage("error.date"), null, false);
 			error = true;
 			return false;
 		}
@@ -136,7 +138,8 @@ public class MapController implements Serializable {
 	
 	public void selectMarker() {
 		if(gridMarker != null) {
-			gridMarker.setIcon(Constants.BLUE_MARKER_ICON);
+			String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+			gridMarker.setIcon(contextPath + Constants.BLUE_MARKER_ICON);
 		}
         Marker marker = markersMap.get(selectedLog.getId());
         //circle = circlesMap.get(selectedLog.getId());

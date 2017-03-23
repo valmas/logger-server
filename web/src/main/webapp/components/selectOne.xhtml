@@ -10,7 +10,7 @@
 	<p:outputLabel value="#{label}" rendered="#{empty rendered ? 'true' : rendered}" />
 	
 	<p:selectOneMenu value="#{value}">
-        <f:selectItem itemLabel="Select One" itemValue="" noSelectionOption="true"  itemDisabled="#{emptySelection}"/>
+        <f:selectItem itemLabel="#{bundle['codelist.no.selection']}" itemValue="" noSelectionOption="true"  itemDisabled="#{emptySelection}"/>
         <f:selectItems value="#{list}" />
         <ui:insert name="extra"/>
     </p:selectOneMenu>

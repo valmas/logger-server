@@ -26,29 +26,29 @@
 	<ui:define name="content">
 
 		<p:panel id="map_search_panel" toggleSpeed="500" toggleable="true" widgetVar="panel" collapsed="#{mapController.collapsed}"
-			styleClass="searchPanel" header="Search Criteria">
+			styleClass="searchPanel" header="#{bundle['search.criteria.title']}">
 			<p:messages />
 			<h:panelGrid columns="3">
 				<h:panelGrid columns="2">
 					
-					<n:input label="Phone number" value="#{mapController.searchCriteria.phoneNumber}"/>
+					<n:input label="#{bundle['log.details.phoneNumber']}" value="#{mapController.searchCriteria.phoneNumber}"/>
 					
-					<n:input label="External Phone number" value="#{mapController.searchCriteria.externalPhoneNumber}"/>
+					<n:input label="#{bundle['log.details.externalPhoneNumber']}" value="#{mapController.searchCriteria.externalPhoneNumber}"/>
 					
-					<n:selectOne label="Direction" value="#{mapController.searchCriteria.direction}" 
+					<n:selectOne label="#{bundle['log.details.direction']}" value="#{mapController.searchCriteria.direction}" 
 						list="#{codelistController.directions}"/>
 				
 				</h:panelGrid>
 				
 				<h:panelGrid columns="2">
 					
-					<n:calendar label="Date from" value="#{mapController.searchCriteria.dateFrom}"
+					<n:calendar label="#{bundle['search.criteria.date.from']}" value="#{mapController.searchCriteria.dateFrom}"
 						type="dateTime" />
 					
-					<n:calendar label="Date to" value="#{mapController.searchCriteria.dateTo}"
+					<n:calendar label="#{bundle['search.criteria.date.to']}" value="#{mapController.searchCriteria.dateTo}"
 						type="dateTime" />
 					
-					<n:selectOne label="Type" value="#{mapController.searchCriteria.logType}"
+					<n:selectOne label="#{bundle['log.details.logType']}" value="#{mapController.searchCriteria.logType}"
 						list="#{codelistController.types}">
 						<ui:define name="extra">
 							<p:ajax event="change" update="smsContent"/>
@@ -61,11 +61,11 @@
 					<h:panelGrid columns="2">
 						<h:panelGrid columns="2">
 							
-							<n:input label="Latitude center" value="#{mapController.searchCriteria.latitude}"/>
+							<n:input label="#{bundle['search.criteria.lat.center']}" value="#{mapController.searchCriteria.latitude}"/>
 							
-							<n:input label="Longitude center" value="#{mapController.searchCriteria.longitude}"/>
+							<n:input label="#{bundle['search.criteria.lng.center']}" value="#{mapController.searchCriteria.longitude}"/>
 							
-							<n:input label="Radius (meters)" value="#{mapController.searchCriteria.radius}"/>
+							<n:input label="#{bundle['log.details.radius']}" value="#{mapController.searchCriteria.radius}"/>
 						
 						</h:panelGrid>
 						
@@ -75,7 +75,7 @@
 			</h:panelGrid>
 			
 			<h:panelGroup id="smsContent">
-				<p:outputLabel value="SMS Content" style="margin-left: 7px"/>
+				<p:outputLabel value="#{bundle['log.details.smsContent']}" style="margin-left: 7px"/>
 				<p:inputText value="#{mapController.searchCriteria.smsContent}" 
 					disabled="#{mapController.searchCriteria.logType != 'SMS'}" 
 					size="108" style="margin-left: 68px"/>
@@ -85,7 +85,7 @@
 			<br />
 			
 			<h:panelGroup id="buttons">
-				<p:commandButton value="Search" update="map_search_panel map_results_panel map afterLoad"
+				<p:commandButton value="#{bundle['search.btn']}" update="map_search_panel map_results_panel map afterLoad"
 					action="#{mapController.search()}" icon="fa fa-fw fa-search" oncomplete="toggle()"/>
 				
 				<h:panelGroup id="afterLoad">
@@ -98,7 +98,7 @@
 				    </h:outputScript>
 				</h:panelGroup>
 					
-				<p:commandButton value="Reset" update="map_results_panel map_search_panel locationPopup"
+				<p:commandButton value="#{bundle['reset.btn']}" update="map_results_panel map_search_panel locationPopup"
 					action="#{mapController.reset()}" icon="fa fa-fw fa-remove" />
 			</h:panelGroup>
 				
@@ -150,9 +150,9 @@
 		        <p:toolbar >
 			        <f:facet name="right">
 			 
-			            <p:commandButton title="Expand" icon="fa fa-fw fa-expand" 
-			            	oncomplete="PF('tablePopup').show();" update="contentForm:tableInfoPopup"/>
-			            <p:commandButton title="Export table in Excel" icon="fa fa-fw fa-download" 
+			           <!--  <p:commandButton title="Expand" icon="fa fa-fw fa-expand" 
+			            	oncomplete="PF('tablePopup').show();" update="contentForm:tableInfoPopup"/> -->
+			            <p:commandButton title="#{bundle['export.btn']}" icon="fa fa-fw fa-download" 
 			            	action="#{mapController.export()}" ajax="false"/>
 	
 			        </f:facet>	 
@@ -187,11 +187,11 @@
 				</p:dataTable>
 			</h:panelGroup>
         </h:panelGrid>
-        
+<!--         
         <p:dialog id="tableInfoPopup" header="Log Results Details" widgetVar="tablePopup" showEffect="explode" 
 	       	modal="true" hideEffect="explode" >
 	       	
-	       	<p:dataTable var="log" value="#{mapController.logs}" scrollable="true" scrollHeight="500" scrollWidth="700" frozenColumns="5">
+	       	<p:dataTable var="log" value="#{mapController.logs}" scrollable="true" scrollHeight="500" scrollWidth="700">
 	       	
 		        <p:column headerText="Phone Number" >
 		            <h:outputText value="#{log.phoneNumber}" />
@@ -258,7 +258,7 @@
 		    </p:dataTable>
 	      		
 		</p:dialog>
-        
+  -->       
         <n:locationFinderPopup value="#{mapController.searchCriteria}"/>
         
         <n:logInfoPopup value="#{mapController.selectedLog}"/>

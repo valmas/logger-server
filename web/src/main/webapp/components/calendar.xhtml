@@ -14,17 +14,17 @@
 		<c:when test="#{empty type or type == 'date'}">
 			<p:calendar value="#{value}" rendered="#{empty rendered ? 'true' : rendered}" disabled="#{disabled}"
 				readonly="#{readonly}" effect="fold" showOn="button" pattern="dd-MM-yyyy" 
-				required="#{required and n:optionalRequiredValidator()}" requiredMessage="#{label} is required" />
+				required="#{required and n:optionalRequiredValidator()}" requiredMessage="#{label} #{bundle['validation.required']}" />
 		</c:when>
 		<c:when test="#{type == 'dateTime'}">
 			<p:calendar value="#{value}" rendered="#{empty rendered ? 'true' : rendered}" disabled="#{disabled}"
 				readonly="#{readonly}" effect="fold" showOn="button" pattern="dd/MM/yyyy HH:mm"
-				required="#{required and n:optionalRequiredValidator()}" requiredMessage="#{label} is required"/>
+				required="#{required and n:optionalRequiredValidator()}" requiredMessage="#{label} #{bundle['validation.required']}"/>
 		</c:when>
 		<c:otherwise>
 			<p:calendar value="#{value}" rendered="#{empty rendered ? 'true' : rendered}" disabled="#{disabled}"
 				readonly="#{readonly}" effect="fold" showOn="button" pattern="HH:mm" timeOnly="true"
-				required="#{required and n:optionalRequiredValidator()}" requiredMessage="#{label} is required"/>
+				required="#{required and n:optionalRequiredValidator()}" requiredMessage="#{label} #{bundle['validation.required']}"/>
 		</c:otherwise>
 
 	</c:choose>

@@ -20,28 +20,28 @@
 		<p:dataTable id="newest_logs" var="log" value="#{welcomeController.logs}" styleClass="newstLogs"
 			style="padding-top: 20px; padding-left: 30px; padding-right: 30px;">
 	       	
-	        <p:column headerText="Phone Number" >
+	        <p:column headerText="#{bundle['log.details.phoneNumber']}" >
 	            <h:outputText value="#{log.phoneNumber}" />
 	        </p:column>
-	        <p:column headerText="External Phone Number"  >
+	        <p:column headerText="#{bundle['log.details.externalPhoneNumber']}"  >
 	            <h:outputText value="#{log.externalPhoneNumber}" />
 	        </p:column>
-	        <p:column headerText="Date" >
+	        <p:column headerText="#{bundle['log.details.dateTime']}" >
 	        	<h:outputText value="#{log.dateTime}" >
 	        		<f:convertDateTime dateStyle="medium" timeZone="EET" type="both"/>
 	        	</h:outputText>
 	        </p:column>
-	        <p:column headerText="Direction" >
-	            <h:outputText value="#{log.direction.name()}" />
+	        <p:column headerText="#{bundle['log.details.direction']}" >
+	            <h:outputText value="#{bundle[log.direction.label]}" />
 	        </p:column>
-	        <p:column headerText="Log Type" >
-	            <h:outputText value="#{log.logType.name()}" />
+	        <p:column headerText="#{bundle['log.details.logType']}" >
+	            <h:outputText value="#{bundle[log.logType.label]}" />
 	        </p:column>
-	        <p:column headerText="Duration" >
+	        <p:column headerText="#{bundle['log.details.duration']}" >
 	            <h:outputText value="#{log.duration}" />
 	        </p:column>
 	        
-	        <p:column headerText="Actions" style="width:80px">
+	        <p:column headerText="#{bundle['log.actions']}" style="width:80px">
 				<p:commandButton rendered="#{log.mapable}" icon="fa fa-map-marker" action="#{welcomeController.goToMap(log)}" 
 					update="contentForm:infoPopup" ajax="false" style="float:left;"/> 
 				

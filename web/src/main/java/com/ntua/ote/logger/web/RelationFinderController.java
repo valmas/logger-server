@@ -66,15 +66,15 @@ public class RelationFinderController implements Serializable {
 			List<Node> nodes = results.getNodes();
 			if(!nodes.isEmpty() && nodes.size() > 1) {
 				if(StringUtils.hasLength(searchCriteria.getExternalPhoneNumber()) && !results.isRelationFound()) {
-					FacesUtil.addInfoMessage("No relation found between " + searchCriteria.getPhoneNumber() + 
-							" and " + searchCriteria.getExternalPhoneNumber(), null, false);
+					FacesUtil.addInfoMessage(FacesUtil.getMessage("error.no.relation") + searchCriteria.getPhoneNumber() + 
+							" - " + searchCriteria.getExternalPhoneNumber(), null, false);
 					error = true;
 					model = null;
 				} else {
 					constructTree(results, searchCriteria.getExternalPhoneNumber());
 				}
 			} else {
-				FacesUtil.addInfoMessage("No records found for the provided phone number", null, false);
+				FacesUtil.addInfoMessage(FacesUtil.getMessage("error.relation.no.records"), null, false);
 				error = true;
 				model = null;
 			}
@@ -84,7 +84,7 @@ public class RelationFinderController implements Serializable {
 	private boolean validation(SearchCriteria searchCriteria){
 		if(searchCriteria.getDateFrom() != null && searchCriteria.getDateTo() != null
 				&& searchCriteria.getDateFrom().after(searchCriteria.getDateTo())) {
-			FacesUtil.addErrorMessage("Date from must be after date to", null, false);
+			FacesUtil.addErrorMessage(FacesUtil.getMessage("error.date"), null, false);
 			error = true;
 			return false;
 		}

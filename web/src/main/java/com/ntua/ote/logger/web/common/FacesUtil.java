@@ -2,12 +2,20 @@ package com.ntua.ote.logger.web.common;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 public class FacesUtil {
+	
+	/** The Constant RESOURCE_BUNDLE_NAME. */
+	static final String RESOURCE_BUNDLE_NAME = "bundle";
+	
+	/** The Constant MISSING_MESSAGE_PREFIX. */
+	private static final String MISSING_MESSAGE_PREFIX = "???";
 	
 	/**
 	 * Optional required validator.
@@ -44,6 +52,27 @@ public class FacesUtil {
 		FacesMessage facesMessage = new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail);
 		FacesContext.getCurrentInstance().addMessage(null, facesMessage);
 		FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(keepMessage);
+	}
+	
+	/**
+	 * Returns the localized message for the given resource bundle key using the
+	 * locale from the current page.
+	 * 
+	 * @param key
+	 *            the resource bundle key
+	 * @return the localized message
+	 */
+	public static String getMessage(String key) {
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		ResourceBundle bundle = facesContext.getApplication().getResourceBundle(facesContext, RESOURCE_BUNDLE_NAME);
+		String ret = null;
+		try {
+			ret = bundle.getString(key);
+		} catch (MissingResourceException e1) {
+			ret = MISSING_MESSAGE_PREFIX + key + MISSING_MESSAGE_PREFIX;
+		}
+
+		return ret;
 	}
 	
 	/**

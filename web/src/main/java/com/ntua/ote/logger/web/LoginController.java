@@ -31,7 +31,7 @@ public class LoginController implements Serializable {
 			userSessionBean.setUserName(userName);
 			return "home";
 		} else {
-			FacesUtil.addErrorMessage("Authentication failed. Please try again", null, false);
+			FacesUtil.addErrorMessage(FacesUtil.getMessage("error.authentication"), null, false);
 			return null;
 		}
 		

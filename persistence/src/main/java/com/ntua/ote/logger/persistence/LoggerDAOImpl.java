@@ -225,7 +225,7 @@ public class LoggerDAOImpl implements LoggerDAO {
 				Predicate andClause = cb.and(predicates.toArray(new Predicate[predicates.size()]));
 				query.where(andClause);
 			}
-			
+			query.orderBy(cb.asc(sm.get(Log_.dateTime)));
 			List<Log> logs = entityManager.createQuery(query).getResultList();
 			return convertLog(logs);
 		} catch (Exception e) {

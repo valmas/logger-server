@@ -34,19 +34,19 @@
 	<ui:define name="content">
 
 		<p:panel id="relation_search_panel" toggleSpeed="500" toggleable="true" widgetVar="panel" 
-			styleClass="searchPanel" header="Search Criteria">
+			styleClass="searchPanel" header="#{bundle['search.criteria.title']}">
 			<p:messages />
 			<h:panelGrid columns="3" id="criteria">
 				<h:panelGrid columns="2">
 					
-					<n:input label="Phone number" required="true"
+					<n:input label="#{bundle['log.details.phoneNumber']}" required="true"
 						value="#{relationFinderController.searchCriteria.phoneNumber}">
 						<ui:define name="extra">
 							<p:ajax event="change" update="criteria"/>
 						</ui:define>
 					</n:input>
 					
-					<n:input label="Other Phone number" 
+					<n:input label="#{bundle['search.criteria.other.phone']}" 
 						disabled="#{empty relationFinderController.searchCriteria.phoneNumber}"
 						value="#{relationFinderController.searchCriteria.externalPhoneNumber}"/>
 									
@@ -54,16 +54,16 @@
 				
 				<h:panelGrid columns="2">
 					
-					<n:calendar label="Date from" value="#{relationFinderController.searchCriteria.dateFrom}"
+					<n:calendar label="#{bundle['search.criteria.date.from']}" value="#{relationFinderController.searchCriteria.dateFrom}"
 						type="dateTime" />
 					
-					<n:calendar label="Date to" value="#{relationFinderController.searchCriteria.dateTo}"
+					<n:calendar label="#{bundle['search.criteria.date.to']}" value="#{relationFinderController.searchCriteria.dateTo}"
 						type="dateTime"/>
 				
 				</h:panelGrid>
 				
 			</h:panelGrid>
-			<p:commandButton id="doValidateAndSearch" value="Search" update="@form afterLoad"
+			<p:commandButton id="doValidateAndSearch" value="#{bundle['search.btn']}" update="@form afterLoad"
 				action="#{relationFinderController.search()}" oncomplete="toggle(args &amp;&amp; !args.validationFailed)"
 				icon="fa fa-fw fa-search" />
 			<h:panelGroup id="afterLoad">
@@ -75,7 +75,7 @@
 			        }
 			    </h:outputScript>
 			</h:panelGroup>
-			<p:commandButton value="Reset" update="relation_search_panel relation_results_panel"
+			<p:commandButton value="#{bundle['reset.btn']}" update="relation_search_panel relation_results_panel"
 				action="#{relationFinderController.reset()}" icon="fa fa-fw fa-remove"/>
 				
 		</p:panel>
