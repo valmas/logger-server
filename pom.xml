@@ -43,6 +43,7 @@
 		<version.ejb.plugin>2.5</version.ejb.plugin>
 		<maven-war-plugin.version>2.5</maven-war-plugin.version>
 		<version.surefire.plugin>2.10</version.surefire.plugin>
+		<version.org.apache.httpclient>4.5.3</version.org.apache.httpclient>
 		<!-- Application Specific -->
 		<vls.application.version>LTSW 1.70</vls.application.version>
 		<vls.application.date>${maven.build.timestamp}</vls.application.date>
@@ -164,6 +165,12 @@
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
 				<version>${org.hibernate.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${version.org.apache.httpclient}</version>
 			</dependency>
 
 		</dependencies>

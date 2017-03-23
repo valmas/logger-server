@@ -18,9 +18,12 @@ import javax.faces.context.FacesContext;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -60,27 +63,27 @@ public class XLSBuilder {
 	 */
 	private static void configureStyles() {
 		headercs = wb.createCellStyle();
-		headercs.setAlignment(CellStyle.ALIGN_CENTER);
+		headercs.setAlignment(HorizontalAlignment.CENTER);
 		headercs.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));
-		headercs.setFillForegroundColor(HSSFColor.GREEN.index);
-		headercs.setFillPattern((short) 1);
+		headercs.setFillForegroundColor(HSSFColor.GREY_80_PERCENT.index);
+		headercs.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
 		labelcs = wb.createCellStyle();
 		labelcs.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));
-		labelcs.setBorderBottom(CellStyle.BORDER_THIN);
+		labelcs.setBorderBottom(BorderStyle.THIN);
 
 		valuecs = wb.createCellStyle();
 		valuecs.setDataFormat(HSSFDataFormat.getBuiltinFormat("text"));
-		valuecs.setAlignment(CellStyle.ALIGN_RIGHT);
+		valuecs.setAlignment(HorizontalAlignment.RIGHT);
 
 		// create 2 fonts objects
 		Font headerFont = wb.createFont();
-		headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		headerFont.setBold(true);
 		headerFont.setFontHeightInPoints((short) 12);
 		headerFont.setColor(HSSFColor.WHITE.index);
 
 		Font labelFont = wb.createFont();
-		labelFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		labelFont.setBold(true);
 
 		Font valueFont = wb.createFont();
 
@@ -213,8 +216,9 @@ public class XLSBuilder {
 		drawResults(results, mappings, header);
 		
 		//autosize each column
-		for (int i = 0; i < mappings.length; i++)
+		for (int i = 0; i < mappings.length; i++) {
 			sheet.autoSizeColumn(i);
+		}
 		
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		try {
