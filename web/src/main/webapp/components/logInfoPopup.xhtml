@@ -23,7 +23,7 @@
 		    	<n:twoLabels label="#{bundle['log.details.duration']}" value="#{value.duration}"
 		    		rendered="#{value.logType == 'CALL'}"/>
 		    	
-		    	<n:twoLabels label="SMS content" value="#{bundle['log.details.smsContent']}" text="true"
+		    	<n:twoLabels label="#{bundle['log.details.smsContent']}" value="#{value.smsContent}" text="true"
 		    		rendered="#{value.logType == 'SMS'}"/>
 		    </h:panelGrid>
 	    	

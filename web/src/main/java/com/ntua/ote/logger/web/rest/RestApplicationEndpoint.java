@@ -34,7 +34,7 @@ public class RestApplicationEndpoint {
 	private LoggerDAO loggerDAO;
 	
 	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	@Produces(MediaType.APPLICATION_JSON)
     @Path("/initial/")
     public long initialLogging(InitialRequest initialRequest) {

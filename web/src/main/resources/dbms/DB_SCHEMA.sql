@@ -32,3 +32,7 @@ create table Users (
 	password VARCHAR(41) NOT NULL,
 	PRIMARY KEY (userName)
 );
+
+ALTER DATABASE logger_db CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+ALTER TABLE Log CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+ALTER TABLE Log CHANGE smsContent smsContent TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

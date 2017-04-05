@@ -22,7 +22,7 @@ public class Utils {
 		int mins = (time / 60) % 60;
 		int hours = time / 3600;
 		if(secs > 0 || mins > 0 || hours > 0) {
-			return (hours > 0 ? hours + " hrs" : "") + (mins > 0 ? mins + " mins" : "") + (secs > 0 ? secs + " secs" : "");
+			return (hours > 0 ? hours + " hrs " : "") + (mins > 0 ? mins + " mins " : "") + (secs > 0 ? secs + " secs" : "");
 		} else {
 			return "0 secs";
 		}
