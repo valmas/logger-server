@@ -65,7 +65,7 @@ public class GeolocateService {
 		cellTowers.setMobileNetworkCode(log.getMnc());
 		//cellTowers.setPsc(123);
 		if("LTE".equalsIgnoreCase(log.getRat()) || "gsm".equalsIgnoreCase(log.getRat()) || "wcdma".equalsIgnoreCase(log.getRat())) {
-			cellTowers.setRadioType(log.getRat());
+			cellTowers.setRadioType(log.getRat().toLowerCase());
 		} else {
 			cellTowers.setRadioType("wcdma");
 		}
