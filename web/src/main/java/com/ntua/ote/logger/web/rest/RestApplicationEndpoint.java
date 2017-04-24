@@ -1,6 +1,7 @@
 package com.ntua.ote.logger.web.rest;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 
 import javax.ejb.Stateless;
@@ -13,15 +14,25 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ntua.ote.logger.persistence.LoggerDAO;
 import com.ntua.ote.logger.persistence.jpa.Log;
 import com.ntua.ote.logger.web.rest.model.DurationRequest;
 import com.ntua.ote.logger.web.rest.model.GeolocateResponse;
 import com.ntua.ote.logger.web.rest.model.InitialRequest;
 import com.ntua.ote.logger.web.rest.model.LocationRequest;
+import com.ntua.ote.logger.web.rest.model.Version;
 import com.ntua.ote.logger.web.service.GeolocateService;
 
 @Stateless
@@ -107,33 +118,59 @@ public class RestApplicationEndpoint {
     }
 	
 	@GET
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
     @Path("/checkVersion/")
     public String checkVersion() {
-		String path = System.getProperty("SERVER_PATH") + "../update/";
-		File[] files = new File(path).listFiles();
-		String tmp;
-		String fileName = "";
-		for(File apk : files) {
-			tmp = apk.getName();
-			if(tmp.compareTo(fileName) > 0) {
-				fileName = tmp;
-			}
+		Version version = parseVersionXml();
+		if(version != null) {
+			LOGGER.info("<check Version> invoked" + version.getVersionNumber());
+			Gson builder = new GsonBuilder().create();
+			return builder.toJson(version);
+		} else {
+			return null;
 		}
-		LOGGER.info("<check Version> invoked" + fileName);
-		return fileName;
+		
     }
 	
 	@GET
     @Path("/update/")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public Response update() {
-		String fileName = checkVersion();
-		String path = System.getProperty("SERVER_PATH") + "../update/";
-	    File file = new File(path + fileName);
-	    ResponseBuilder response = Response.ok((Object) file);
-	    response.header("Content-Disposition", "attachment; filename=" + fileName);
-	    return response.build();
+		Version version = parseVersionXml();
+		if(version != null) {
+			LOGGER.info("<update> invoked" + version.getVersionNumber());
+			String fileName = "logger_v" + version.getVersionNumber();
+			String path = System.getProperty("SERVER_PATH") + "../update/";
+		    File file = new File(path + fileName);
+		    ResponseBuilder response = Response.ok((Object) file);
+		    response.header("Content-Disposition", "attachment; filename=" + fileName);
+		    return response.build();
+		} else {
+			return null;
+		}
 
+	}
+	
+	private Version parseVersionXml(){
+		String path = System.getProperty("SERVER_PATH") + "../update/";
+		File file  = new File(path + "version.xml");
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder;
+		try {
+			dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(file);
+			doc.getDocumentElement().normalize();	
+			NodeList nList = doc.getElementsByTagName("latestVersion");
+			Element latestVersion = (Element) nList.item(0);
+			String versionNumber = latestVersion.getElementsByTagName("versionNumber").item(0).getTextContent();
+			String changeLog = latestVersion.getElementsByTagName("changeLog").item(0).getTextContent();
+			Version version = new Version();
+			version.setVersionNumber(versionNumber);
+			version.setChangeLog(changeLog);
+			return version;
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			LOGGER.error("<check Version> exception", e);
+		}
+		return null;
 	}
 }

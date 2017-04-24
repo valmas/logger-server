@@ -43,6 +43,7 @@ public class GeolocateService {
 		    while ((line = rd.readLine()) != null) {
 		    	result.append(line);
 		    }
+		    rd.close();
 		    Gson builder = new GsonBuilder().create();
 		    GeolocateResponse geolocateResponse = builder.fromJson(result.toString(), GeolocateResponse.class);
 		    LOGGER.info(result);
