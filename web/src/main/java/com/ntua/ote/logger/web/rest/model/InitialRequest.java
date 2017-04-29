@@ -5,7 +5,7 @@ import java.util.Date;
 import com.ntua.ote.logger.core.enums.Direction;
 import com.ntua.ote.logger.core.enums.LogType;
 
-public class InitialRequest {
+public class InitialRequest extends AuthenticationRequest {
 
 	private String brandModel;
 	

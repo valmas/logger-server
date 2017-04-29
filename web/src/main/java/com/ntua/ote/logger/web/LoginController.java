@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.ntua.ote.logger.core.common.UserSessionBean;
+import com.ntua.ote.logger.persistence.LoggerDAO;
 import com.ntua.ote.logger.persistence.LoggerDAOImpl;
 import com.ntua.ote.logger.web.common.FacesUtil;
 
@@ -25,7 +26,7 @@ public class LoginController implements Serializable {
 	private UserSessionBean userSessionBean;
 	
 	@Inject
-	private LoggerDAOImpl loggerDAOImpl;
+	private LoggerDAO loggerDAOImpl;
 	
 	public String login(){
 		if(loggerDAOImpl.login(userName, password)) {

@@ -1,6 +1,6 @@
 package com.ntua.ote.logger.web.rest.model;
 
-public class DurationRequest {
+public class DurationRequest extends AuthenticationRequest {
 
 	private long rowId;
 	private int duration;

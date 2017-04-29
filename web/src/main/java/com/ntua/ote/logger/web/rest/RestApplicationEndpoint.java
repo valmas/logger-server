@@ -28,6 +28,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ntua.ote.logger.persistence.LoggerDAO;
 import com.ntua.ote.logger.persistence.jpa.Log;
+import com.ntua.ote.logger.web.rest.model.AuthenticationRequest;
 import com.ntua.ote.logger.web.rest.model.DurationRequest;
 import com.ntua.ote.logger.web.rest.model.GeolocateResponse;
 import com.ntua.ote.logger.web.rest.model.InitialRequest;
@@ -49,31 +50,34 @@ public class RestApplicationEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
     @Path("/initial/")
     public long initialLogging(InitialRequest initialRequest) {
-		LOGGER.info("<initialLogging invoked>" + initialRequest);
-		Log log = new Log();
-		log.setBrandModel(initialRequest.getBrandModel());
-		log.setCellId(initialRequest.getCellId());
-		if(initialRequest.getDateTime() != null) {
-			log.setDateTime(new Timestamp(initialRequest.getDateTime().getTime()));
+		if(loggerDAO.login(initialRequest.getUserName(), initialRequest.getPassword())) {
+			LOGGER.info("<initialLogging invoked>" + initialRequest);
+			Log log = new Log();
+			log.setBrandModel(initialRequest.getBrandModel());
+			log.setCellId(initialRequest.getCellId());
+			if(initialRequest.getDateTime() != null) {
+				log.setDateTime(new Timestamp(initialRequest.getDateTime().getTime()));
+			}
+			log.setDirection(initialRequest.getDirection());
+			log.setExtPhoneNumber(initialRequest.getExternalPhoneNumber());
+			log.setImei(initialRequest.getImei());
+			log.setImsi(initialRequest.getImsi());
+			log.setLac(initialRequest.getLac());
+			log.setLteCQI(initialRequest.getLteCqi());
+			log.setLteRSRP(initialRequest.getLteRsrp());
+			log.setLteRSRQ(initialRequest.getLteRsrq());
+			log.setLteRSSNR(initialRequest.getLteRssnr());
+			log.setPhoneNumber(initialRequest.getPhoneNumber());
+			log.setRat(initialRequest.getRat());
+			log.setMnc(initialRequest.getMnc());
+			log.setMcc(initialRequest.getMcc());
+			log.setRssi(initialRequest.getRssi());
+			log.setSmsContent(initialRequest.getSmsContent());
+			log.setVersion(initialRequest.getVersion());
+			log.setLogType(initialRequest.getLogType());
+			return loggerDAO.addLog(log);
 		}
-		log.setDirection(initialRequest.getDirection());
-		log.setExtPhoneNumber(initialRequest.getExternalPhoneNumber());
-		log.setImei(initialRequest.getImei());
-		log.setImsi(initialRequest.getImsi());
-		log.setLac(initialRequest.getLac());
-		log.setLteCQI(initialRequest.getLteCqi());
-		log.setLteRSRP(initialRequest.getLteRsrp());
-		log.setLteRSRQ(initialRequest.getLteRsrq());
-		log.setLteRSSNR(initialRequest.getLteRssnr());
-		log.setPhoneNumber(initialRequest.getPhoneNumber());
-		log.setRat(initialRequest.getRat());
-		log.setMnc(initialRequest.getMnc());
-		log.setMcc(initialRequest.getMcc());
-		log.setRssi(initialRequest.getRssi());
-		log.setSmsContent(initialRequest.getSmsContent());
-		log.setVersion(initialRequest.getVersion());
-		log.setLogType(initialRequest.getLogType());
-		return loggerDAO.addLog(log);
+		return -1;
     }
 	
 	@POST
@@ -81,31 +85,34 @@ public class RestApplicationEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
     @Path("/location/")
     public int locationLogging(LocationRequest locationRequest) {
-		LOGGER.info("<locationLogging> invoked" + locationRequest);
-		if(locationRequest.isLocated()) {
-			return loggerDAO.updateLocation(locationRequest.getRowId(), locationRequest.getLongitude(), locationRequest.getLatitude());
-		} else {
-			/*final long id = locationRequest.getRowId();
-			new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					Log log = loggerDAO.get(id);
-					GeolocateResponse geolocateResponse = GeolocateService.geolocate(log);
-					if(geolocateResponse != null) {
-						loggerDAO.updateLocation(id, geolocateResponse.getLocation().getLat(), geolocateResponse.getLocation().getLng(),  
-							geolocateResponse.getAccuracy());
+		if(loggerDAO.login(locationRequest.getUserName(), locationRequest.getPassword())) {
+			LOGGER.info("<locationLogging> invoked" + locationRequest);
+			if(locationRequest.isLocated()) {
+				return loggerDAO.updateLocation(locationRequest.getRowId(), locationRequest.getLongitude(), locationRequest.getLatitude());
+			} else {
+				/*final long id = locationRequest.getRowId();
+				new Thread(new Runnable() {
+					
+					@Override
+					public void run() {
+						Log log = loggerDAO.get(id);
+						GeolocateResponse geolocateResponse = GeolocateService.geolocate(log);
+						if(geolocateResponse != null) {
+							loggerDAO.updateLocation(id, geolocateResponse.getLocation().getLat(), geolocateResponse.getLocation().getLng(),  
+								geolocateResponse.getAccuracy());
+						}
 					}
+				}).start();*/
+				Log log = loggerDAO.get(locationRequest.getRowId());
+				GeolocateResponse geolocateResponse = GeolocateService.geolocate(log);
+				if(geolocateResponse != null && geolocateResponse.getError() == null) {
+					loggerDAO.updateLocation(locationRequest.getRowId(), geolocateResponse.getLocation().getLng(), geolocateResponse.getLocation().getLat(),  
+						geolocateResponse.getAccuracy());
 				}
-			}).start();*/
-			Log log = loggerDAO.get(locationRequest.getRowId());
-			GeolocateResponse geolocateResponse = GeolocateService.geolocate(log);
-			if(geolocateResponse != null && geolocateResponse.getError() == null) {
-				loggerDAO.updateLocation(locationRequest.getRowId(), geolocateResponse.getLocation().getLng(), geolocateResponse.getLocation().getLat(),  
-					geolocateResponse.getAccuracy());
+				return 1;
 			}
-			return 1;
 		}
+		return -1;
     }
 	
 	@POST
@@ -113,42 +120,45 @@ public class RestApplicationEndpoint {
 	@Produces(MediaType.APPLICATION_JSON)
     @Path("/duration/")
     public int durationLogging(DurationRequest durationRequest) {
-		LOGGER.info("<durationLogging> invoked" + durationRequest);
-		return loggerDAO.updateDuration(durationRequest.getRowId(), durationRequest.getDuration());
+		if(loggerDAO.login(durationRequest.getUserName(), durationRequest.getPassword())) {
+			LOGGER.info("<durationLogging> invoked" + durationRequest);
+			return loggerDAO.updateDuration(durationRequest.getRowId(), durationRequest.getDuration());
+		}
+		return -1;
     }
 	
-	@GET
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
     @Path("/checkVersion/")
-    public String checkVersion() {
-		Version version = parseVersionXml();
-		if(version != null) {
-			LOGGER.info("<check Version> invoked" + version.getVersionNumber());
-			Gson builder = new GsonBuilder().create();
-			return builder.toJson(version);
-		} else {
-			return null;
+    public String checkVersion(AuthenticationRequest authRequest) {
+		if(loggerDAO.login(authRequest.getUserName(), authRequest.getPassword())) {
+			Version version = parseVersionXml();
+			if(version != null) {
+				LOGGER.info("<check Version> invoked" + version.getVersionNumber());
+				Gson builder = new GsonBuilder().create();
+				return builder.toJson(version);
+			}
 		}
-		
+		return null;		
     }
 	
-	@GET
+	@POST
     @Path("/update/")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
-	public Response update() {
-		Version version = parseVersionXml();
-		if(version != null) {
-			LOGGER.info("<update> invoked" + version.getVersionNumber());
-			String fileName = "logger_v" + version.getVersionNumber();
-			String path = System.getProperty("SERVER_PATH") + "../update/";
-		    File file = new File(path + fileName);
-		    ResponseBuilder response = Response.ok((Object) file);
-		    response.header("Content-Disposition", "attachment; filename=" + fileName);
-		    return response.build();
-		} else {
-			return null;
+	public Response update(AuthenticationRequest authRequest) {
+		if(loggerDAO.login(authRequest.getUserName(), authRequest.getPassword())) {
+			Version version = parseVersionXml();
+			if(version != null) {
+				LOGGER.info("<update> invoked" + version.getVersionNumber());
+				String fileName = "logger_v" + version.getVersionNumber();
+				String path = System.getProperty("SERVER_PATH") + "../update/";
+			    File file = new File(path + fileName);
+			    ResponseBuilder response = Response.ok((Object) file);
+			    response.header("Content-Disposition", "attachment; filename=" + fileName);
+			    return response.build();
+			} 
 		}
-
+		return null;
 	}
 	
 	private Version parseVersionXml(){

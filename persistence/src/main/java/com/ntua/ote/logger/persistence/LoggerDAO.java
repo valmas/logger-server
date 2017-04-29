@@ -13,4 +13,6 @@ public interface LoggerDAO {
 	int updateDuration(long id, int duration);
 	
 	Log get(Long id);
+	
+	boolean login(String userName, String password);
 }
