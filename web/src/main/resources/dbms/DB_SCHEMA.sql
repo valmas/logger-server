@@ -1,3 +1,5 @@
+create database logger_db;
+
 create table Log (
 	id BIGINT NOT NULL,
 	phoneNumber VARCHAR(35) NOT NULL,

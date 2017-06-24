@@ -31,7 +31,7 @@ import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.util.StringUtils;
 
 /**
- * Constructs a Excel document
+ * Constructs an Excel document
  */
 public class XLSBuilder {
 

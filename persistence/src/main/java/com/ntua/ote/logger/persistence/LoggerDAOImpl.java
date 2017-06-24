@@ -9,7 +9,6 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
@@ -20,6 +19,7 @@ import javax.persistence.criteria.Root;
 import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Logger;
+import org.hibernate.ejb.EntityManagerImpl;
 import org.springframework.util.StringUtils;
 
 import com.ntua.ote.logger.core.common.Utils;
@@ -36,7 +36,7 @@ import com.ntua.ote.logger.persistence.jpa.Log_;
 public class LoggerDAOImpl implements LoggerDAO {
 
 	@PersistenceContext(unitName = "logger")
-	private EntityManager entityManager;
+	private EntityManagerImpl entityManager;
 	
 	@Resource 
 	private UserTransaction userTransaction;
@@ -370,19 +370,19 @@ public class LoggerDAOImpl implements LoggerDAO {
 		return logDetails;
 	}
 	
-	public boolean login(String userName, String password){
-		String query =
-		   "select count(u) from Users u where u.userName = :userName"
-		   + " and u.password = PASSWORD(:userPassword)";
-		Query jpqlQuery = entityManager.createQuery(query)
-		    .setParameter("userName", userName)
-		    .setParameter("userPassword", password);
-		long count = (long) jpqlQuery.getSingleResult();
-		if(count > 0) {
-			return true;
-		} else {
-			return false;
+		public boolean login(String userName, String password){
+			String query =
+			   "select count(u) from Users u where u.userName = :userName"
+			   + " and u.password = PASSWORD(:userPassword)";
+			Query jpqlQuery = entityManager.createQuery(query)
+			    .setParameter("userName", userName)
+			    .setParameter("userPassword", password);
+			long count = (long) jpqlQuery.getSingleResult();
+			if(count > 0) {
+				return true;
+			} else {
+				return false;
+			}
 		}
-	}
 
 }

@@ -132,7 +132,6 @@ public class MapController implements Serializable {
         latitude = "" + selectedLog.getLatitude();
         longitude = "" + selectedLog.getLongitude();
         radius = "" + selectedLog.getRadius();
-        //circle = circlesMap.get(selectedLog.getId());
     }
 	
 	public void selectMarker() {
@@ -141,7 +140,6 @@ public class MapController implements Serializable {
 			gridMarker.setIcon(contextPath + Constants.BLUE_MARKER_ICON);
 		}
         Marker marker = markersMap.get(selectedLog.getId());
-        //circle = circlesMap.get(selectedLog.getId());
 		this.marker = marker;
 		marker.setIcon("");
 		gridMarker = marker;
