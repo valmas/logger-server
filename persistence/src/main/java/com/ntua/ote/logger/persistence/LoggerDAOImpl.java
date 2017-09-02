@@ -9,6 +9,7 @@ import java.util.Set;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
@@ -16,10 +17,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Logger;
-import org.hibernate.ejb.EntityManagerImpl;
 import org.springframework.util.StringUtils;
 
 import com.ntua.ote.logger.core.common.Utils;
@@ -36,23 +35,16 @@ import com.ntua.ote.logger.persistence.jpa.Log_;
 public class LoggerDAOImpl implements LoggerDAO {
 
 	@PersistenceContext(unitName = "logger")
-	private EntityManagerImpl entityManager;
-	
-	@Resource 
-	private UserTransaction userTransaction;
-	
+	private EntityManager entityManager;
+
 	private static final Logger LOGGER = Logger.getLogger(LoggerDAOImpl.class);
-	
+
+	/** Adds a new Log entry in the database */
 	@Override
 	public long addLog(Log log) {
-		// EntityTransaction transaction = entityManager.getTransaction();
 		try {
-			// transaction.begin();
 			entityManager.persist(log);
-
 			entityManager.flush();
-			// transaction.commit();
-			
 			return log.getId();
 		} catch (Exception e) {
 			LOGGER.error("<add Log> :", e);
@@ -60,6 +52,7 @@ public class LoggerDAOImpl implements LoggerDAO {
 		}
 	}
 
+	/** Updates a Log entry in the database with the location */
 	@Override
 	public int updateLocation(long id, double longitude, double latitude) {
 		try {
@@ -79,7 +72,11 @@ public class LoggerDAOImpl implements LoggerDAO {
 			return -1;
 		}
 	}
-	
+
+	/**
+	 * Updates a Log entry in the database with the location and radius obtained
+	 * from MLS
+	 */
 	@Override
 	public int updateLocation(long id, double longitude, double latitude, double radius) {
 		try {
@@ -100,6 +97,7 @@ public class LoggerDAOImpl implements LoggerDAO {
 		}
 	}
 
+	/** Updates a Log entry in the database with the duration */
 	@Override
 	public int updateDuration(long id, int duration) {
 		try {
@@ -117,7 +115,8 @@ public class LoggerDAOImpl implements LoggerDAO {
 			return -1;
 		}
 	}
-	
+
+	/** Fetches a Log entry from the database with id */
 	@Override
 	public Log get(Long id) {
 		try {
@@ -128,7 +127,8 @@ public class LoggerDAOImpl implements LoggerDAO {
 			return null;
 		}
 	}
-	
+
+	/** Gets the @limit latest logs from database */
 	public List<LogDetails> getLogDetails(int limit) {
 		try {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -143,53 +143,63 @@ public class LoggerDAOImpl implements LoggerDAO {
 		}
 	}
 
+	/** Searches the database based on the given criteria */
 	public List<LogDetails> search(SearchCriteria searchCriteria) {
 		try {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<Log> query = cb.createQuery(Log.class);
 			Root<Log> sm = query.from(Log.class);
 			List<Predicate> predicates = new ArrayList<>();
-			if(searchCriteria.getId() > 0) {
+			if (searchCriteria.getId() > 0) {
 				predicates.add(cb.equal(sm.get(Log_.id), searchCriteria.getId()));
 			}
-			if(StringUtils.hasText(searchCriteria.getPhoneNumber())) {
+			if (StringUtils.hasText(searchCriteria.getPhoneNumber())) {
 				predicates.add(cb.equal(sm.get(Log_.phoneNumber), searchCriteria.getPhoneNumber()));
 			}
-			if(searchCriteria.getDateFrom() != null) {
-				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.dateTime), new Timestamp(searchCriteria.getDateFrom().getTime())));			
+			if (searchCriteria.getDateFrom() != null) {
+				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.dateTime),
+						new Timestamp(searchCriteria.getDateFrom().getTime())));
 			}
-			if(searchCriteria.getDateTo() != null) {
-				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.dateTime), new Timestamp(searchCriteria.getDateTo().getTime())));			
+			if (searchCriteria.getDateTo() != null) {
+				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.dateTime),
+						new Timestamp(searchCriteria.getDateTo().getTime())));
 			}
-			if(StringUtils.hasText(searchCriteria.getExternalPhoneNumber())) {
+			if (StringUtils.hasText(searchCriteria.getExternalPhoneNumber())) {
 				predicates.add(cb.equal(sm.get(Log_.extPhoneNumber), searchCriteria.getExternalPhoneNumber()));
 			}
-			if(StringUtils.hasText(searchCriteria.getDirection())) {
-				predicates.add(cb.equal(sm.get(Log_.direction), Direction.valueOf(searchCriteria.getDirection().toUpperCase())));
+			if (StringUtils.hasText(searchCriteria.getDirection())) {
+				predicates.add(cb.equal(sm.get(Log_.direction),
+						Direction.valueOf(searchCriteria.getDirection().toUpperCase())));
 			}
-			if(StringUtils.hasText(searchCriteria.getLogType())) {
-				predicates.add(cb.equal(sm.get(Log_.logType), LogType.valueOf(searchCriteria.getLogType().toUpperCase())));
+			if (StringUtils.hasText(searchCriteria.getLogType())) {
+				predicates.add(
+						cb.equal(sm.get(Log_.logType), LogType.valueOf(searchCriteria.getLogType().toUpperCase())));
 			}
-			if(StringUtils.hasText(searchCriteria.getSmsContent())) {
+			if (StringUtils.hasText(searchCriteria.getSmsContent())) {
 				String[] tokens = searchCriteria.getSmsContent().split(" ");
-				for(String s : tokens) {
-					predicates.add(cb.like(sm.get(Log_.smsContent), "%"+s+"%"));
+				for (String s : tokens) {
+					predicates.add(cb.like(sm.get(Log_.smsContent), "%" + s + "%"));
 				}
 			}
-			if(searchCriteria.getLongitude() != null && searchCriteria.getLatitude() != null && searchCriteria.getRadius() > 0) {
-				double[] diffLatLng = Utils.calculateLatLngFromRadius(searchCriteria.getRadius(), searchCriteria.getLatitude().doubleValue(), 
-						searchCriteria.getLongitude().doubleValue());
-				
-				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.latitude), searchCriteria.getLatitude().doubleValue() - diffLatLng[0]));
-				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.latitude), searchCriteria.getLatitude().doubleValue() + diffLatLng[0]));
-				
-				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.longitude), searchCriteria.getLongitude().doubleValue() - diffLatLng[1]));
-				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.longitude), searchCriteria.getLongitude().doubleValue() + diffLatLng[1]));
-				
-				predicates.add(cb.notEqual(sm.get(Log_.latitude), 0));		
+			if (searchCriteria.getLongitude() != null && searchCriteria.getLatitude() != null
+					&& searchCriteria.getRadius() > 0) {
+				double[] diffLatLng = Utils.calculateLatLngFromRadius(searchCriteria.getRadius(),
+						searchCriteria.getLatitude().doubleValue(), searchCriteria.getLongitude().doubleValue());
+
+				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.latitude),
+						searchCriteria.getLatitude().doubleValue() - diffLatLng[0]));
+				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.latitude),
+						searchCriteria.getLatitude().doubleValue() + diffLatLng[0]));
+
+				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.longitude),
+						searchCriteria.getLongitude().doubleValue() - diffLatLng[1]));
+				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.longitude),
+						searchCriteria.getLongitude().doubleValue() + diffLatLng[1]));
+
+				predicates.add(cb.notEqual(sm.get(Log_.latitude), 0));
 				predicates.add(cb.notEqual(sm.get(Log_.longitude), 0));
 			}
-			if(!predicates.isEmpty()) {
+			if (!predicates.isEmpty()) {
 				Predicate andClause = cb.and(predicates.toArray(new Predicate[predicates.size()]));
 				query.where(andClause);
 			}
@@ -201,26 +211,29 @@ public class LoggerDAOImpl implements LoggerDAO {
 			return null;
 		}
 	}
-	
+
+	/** Searches the database based on the given criteria */
 	public List<LogDetails> searchPath(SearchCriteria searchCriteria) {
 		try {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 			CriteriaQuery<Log> query = cb.createQuery(Log.class);
 			Root<Log> sm = query.from(Log.class);
 			List<Predicate> predicates = new ArrayList<>();
-			if(StringUtils.hasText(searchCriteria.getPhoneNumber())) {
+			if (StringUtils.hasText(searchCriteria.getPhoneNumber())) {
 				predicates.add(cb.equal(sm.get(Log_.phoneNumber), searchCriteria.getPhoneNumber()));
 			}
-			if(searchCriteria.getDateFrom() != null) {
-				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.dateTime), new Timestamp(searchCriteria.getDateFrom().getTime())));			
+			if (searchCriteria.getDateFrom() != null) {
+				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.dateTime),
+						new Timestamp(searchCriteria.getDateFrom().getTime())));
 			}
-			if(searchCriteria.getDateTo() != null) {
-				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.dateTime), new Timestamp(searchCriteria.getDateTo().getTime())));			
+			if (searchCriteria.getDateTo() != null) {
+				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.dateTime),
+						new Timestamp(searchCriteria.getDateTo().getTime())));
 			}
-			predicates.add(cb.notEqual(sm.get(Log_.latitude), 0));		
+			predicates.add(cb.notEqual(sm.get(Log_.latitude), 0));
 			predicates.add(cb.notEqual(sm.get(Log_.longitude), 0));
 
-			if(!predicates.isEmpty()) {
+			if (!predicates.isEmpty()) {
 				Predicate andClause = cb.and(predicates.toArray(new Predicate[predicates.size()]));
 				query.where(andClause);
 			}
@@ -232,35 +245,39 @@ public class LoggerDAOImpl implements LoggerDAO {
 			return null;
 		}
 	}
-	
+
+	/**
+	 * Retrieves logs from tha database as List of nodes in order to create a
+	 * graph
+	 */
 	public SearchResults searchRelation(SearchCriteria searchCriteria) {
 		SearchResults results = new SearchResults();
 		List<Node> nodes = new ArrayList<>();
 		results.setNodes(nodes);
-		if(StringUtils.hasLength(searchCriteria.getPhoneNumber())) {
+		if (StringUtils.hasLength(searchCriteria.getPhoneNumber())) {
 			Node root = new Node(searchCriteria.getPhoneNumber(), 0);
-			
+
 			nodes.add(root);
 			searchIntRelation(searchCriteria, root);
 			searchExtRelation(searchCriteria, root);
 			Set<String> uniqueSet = new HashSet<>();
 			uniqueSet.add(searchCriteria.getPhoneNumber());
 			List<Node> list = new ArrayList<>();
-			for(Node s : root.getChildren()) {
+			for (Node s : root.getChildren()) {
 				list.add(s);
 				s.setLevel(1);
 			}
-			while(!list.isEmpty()) {
+			while (!list.isEmpty()) {
 				Node node = list.get(0);
-				if(node.getPhoneNumber().equals(searchCriteria.getExternalPhoneNumber())) {
+				if (node.getPhoneNumber().equals(searchCriteria.getExternalPhoneNumber())) {
 					results.setRelationFound(true);
 				}
 				String phoneNumber = node.getPhoneNumber();
 				int level = node.getLevel();
-				if(!uniqueSet.contains(phoneNumber)) {
+				if (!uniqueSet.contains(phoneNumber)) {
 					searchIntRelation(searchCriteria, node);
 					searchExtRelation(searchCriteria, node);
-					for(Node s : node.getChildren()) {
+					for (Node s : node.getChildren()) {
 						list.add(s);
 						s.setLevel(level + 1);
 					}
@@ -272,8 +289,7 @@ public class LoggerDAOImpl implements LoggerDAO {
 		}
 		return results;
 	}
-	
-	
+
 	private void searchIntRelation(SearchCriteria searchCriteria, Node parent) {
 		try {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -281,21 +297,23 @@ public class LoggerDAOImpl implements LoggerDAO {
 			Root<Log> sm = query.from(Log.class);
 			query.multiselect(sm.get(Log_.extPhoneNumber));
 			List<Predicate> predicates = new ArrayList<>();
-			if(StringUtils.hasText(searchCriteria.getPhoneNumber())) {
+			if (StringUtils.hasText(searchCriteria.getPhoneNumber())) {
 				predicates.add(cb.equal(sm.get(Log_.phoneNumber), parent.getPhoneNumber()));
 			}
-			if(searchCriteria.getDateFrom() != null) {
-				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.dateTime), new Timestamp(searchCriteria.getDateFrom().getTime())));			
+			if (searchCriteria.getDateFrom() != null) {
+				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.dateTime),
+						new Timestamp(searchCriteria.getDateFrom().getTime())));
 			}
-			if(searchCriteria.getDateTo() != null) {
-				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.dateTime), new Timestamp(searchCriteria.getDateTo().getTime())));			
+			if (searchCriteria.getDateTo() != null) {
+				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.dateTime),
+						new Timestamp(searchCriteria.getDateTo().getTime())));
 			}
 
-			if(!predicates.isEmpty()) {
+			if (!predicates.isEmpty()) {
 				Predicate andClause = cb.and(predicates.toArray(new Predicate[predicates.size()]));
 				query.where(andClause);
 			}
-			
+
 			List<Tuple> tupleResult = entityManager.createQuery(query).getResultList();
 			for (Tuple t : tupleResult) {
 				parent.getChildren().add(new Node((String) t.get(0)));
@@ -304,7 +322,7 @@ public class LoggerDAOImpl implements LoggerDAO {
 			LOGGER.error("<search> :", e);
 		}
 	}
-	
+
 	private void searchExtRelation(SearchCriteria searchCriteria, Node parent) {
 		try {
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -312,21 +330,23 @@ public class LoggerDAOImpl implements LoggerDAO {
 			Root<Log> sm = query.from(Log.class);
 			query.multiselect(sm.get(Log_.phoneNumber));
 			List<Predicate> predicates = new ArrayList<>();
-			if(StringUtils.hasText(searchCriteria.getPhoneNumber())) {
+			if (StringUtils.hasText(searchCriteria.getPhoneNumber())) {
 				predicates.add(cb.equal(sm.get(Log_.extPhoneNumber), parent.getPhoneNumber()));
 			}
-			if(searchCriteria.getDateFrom() != null) {
-				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.dateTime), new Timestamp(searchCriteria.getDateFrom().getTime())));			
+			if (searchCriteria.getDateFrom() != null) {
+				predicates.add(cb.greaterThanOrEqualTo(sm.get(Log_.dateTime),
+						new Timestamp(searchCriteria.getDateFrom().getTime())));
 			}
-			if(searchCriteria.getDateTo() != null) {
-				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.dateTime), new Timestamp(searchCriteria.getDateTo().getTime())));			
+			if (searchCriteria.getDateTo() != null) {
+				predicates.add(cb.lessThanOrEqualTo(sm.get(Log_.dateTime),
+						new Timestamp(searchCriteria.getDateTo().getTime())));
 			}
 
-			if(!predicates.isEmpty()) {
+			if (!predicates.isEmpty()) {
 				Predicate andClause = cb.and(predicates.toArray(new Predicate[predicates.size()]));
 				query.where(andClause);
 			}
-			
+
 			List<Tuple> tupleResult = entityManager.createQuery(query).getResultList();
 			for (Tuple t : tupleResult) {
 				parent.getChildren().add(new Node((String) t.get(0)));
@@ -335,10 +355,10 @@ public class LoggerDAOImpl implements LoggerDAO {
 			LOGGER.error("<search> :", e);
 		}
 	}
-	
-	private List<LogDetails> convertLog(List<Log> logs){
+
+	private List<LogDetails> convertLog(List<Log> logs) {
 		List<LogDetails> logDetails = new ArrayList<LogDetails>();
-		for(Log log : logs) {
+		for (Log log : logs) {
 			LogDetails logDetail = new LogDetails();
 			logDetail.setId(log.getId());
 			logDetail.setDateTime(new Date(log.getDateTime().getTime()));
@@ -369,20 +389,19 @@ public class LoggerDAOImpl implements LoggerDAO {
 		}
 		return logDetails;
 	}
-	
-		public boolean login(String userName, String password){
-			String query =
-			   "select count(u) from Users u where u.userName = :userName"
-			   + " and u.password = PASSWORD(:userPassword)";
-			Query jpqlQuery = entityManager.createQuery(query)
-			    .setParameter("userName", userName)
-			    .setParameter("userPassword", password);
-			long count = (long) jpqlQuery.getSingleResult();
-			if(count > 0) {
-				return true;
-			} else {
-				return false;
-			}
+
+	/** Checks if a username-password pair exists in the database */
+	public boolean login(String userName, String password) {
+		String query = "select count(u) from Users u where u.userName = :userName"
+				+ " and u.password = PASSWORD(:userPassword)";
+		Query jpqlQuery = entityManager.createQuery(query).setParameter("userName", userName)
+				.setParameter("userPassword", password);
+		long count = (long) jpqlQuery.getSingleResult();
+		if (count > 0) {
+			return true;
+		} else {
+			return false;
 		}
+	}
 
 }

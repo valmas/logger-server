@@ -24,6 +24,8 @@ public class GeolocateService {
 	
 	private static final Logger LOGGER = Logger.getLogger(GeolocateService.class);
 
+	/** Call MLS Database with REST Services to retrieve an estimation of the 
+	 * location based on the network details of the Log */ 
 	public static GeolocateResponse geolocate(Log log){
 		try {
 
@@ -54,24 +56,22 @@ public class GeolocateService {
 		}
 	}
 	
+	/** Creates the geolocate Request */ 
 	private static String createRequest(Log log){
 		GeolocateRequest geolocateRequest = new GeolocateRequest();
 		CellTowers cellTowers = new CellTowers();
 		geolocateRequest.setCellTowers(new  ArrayList<CellTowers>());
 		geolocateRequest.getCellTowers().add(cellTowers);
-		//cellTowers.setAge(1);
 		cellTowers.setCellId(log.getCellId());
 		cellTowers.setLocationAreaCode(log.getLac());
 		cellTowers.setMobileCountryCode(log.getMcc());
 		cellTowers.setMobileNetworkCode(log.getMnc());
-		//cellTowers.setPsc(123);
 		if("LTE".equalsIgnoreCase(log.getRat()) || "gsm".equalsIgnoreCase(log.getRat()) || "wcdma".equalsIgnoreCase(log.getRat())) {
 			cellTowers.setRadioType(log.getRat().toLowerCase());
 		} else {
 			cellTowers.setRadioType("wcdma");
 		}
 		cellTowers.setSignalStrength(log.getRssi());
-		//cellTowers.setTimingAdvance(4);
 		Gson builder = new GsonBuilder().create();
 		return builder.toJson(geolocateRequest);
 	}

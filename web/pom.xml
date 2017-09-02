@@ -146,7 +146,7 @@
 						<configuration>
 							<encoding>UTF8</encoding>
 							<includes>
-								<include>*_gr.properties</include>
+								<include>*_el.properties</include>
 							</includes>
 						</configuration>
 					</execution>

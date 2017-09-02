@@ -9,11 +9,10 @@ import org.springframework.util.StringUtils;
 public class ManyInputSelect {
 
 	private List<ManyInputSelectItem> inputs;
-	
 	private String input;
-	
 	private Stack<String> colorStack;
 	
+	/** Initialize the stack of colors with five preset colors */
 	public ManyInputSelect(){
 		inputs = new ArrayList<>();
 		colorStack = new Stack<>();
@@ -24,6 +23,7 @@ public class ManyInputSelect {
 		colorStack.push("#FF0000");
 	}
 	
+	/** Checks if the input has already been added */
 	private boolean exists(String input){
 		for(ManyInputSelectItem item : inputs) {
 			if(input.equals(item.input)) {
@@ -33,6 +33,8 @@ public class ManyInputSelect {
 		return false;
 	}
 	
+	/** Add an entry from input. Remove the top color from the stack. 
+	 * Create a ManyInputSelectItem with the removed color and input and add it to the list */
 	public void add(){
 		if(StringUtils.hasLength(input) && !exists(input) && !colorStack.isEmpty()) {
 			ManyInputSelectItem item = new ManyInputSelectItem();
@@ -43,11 +45,14 @@ public class ManyInputSelect {
 		}
 	}
 	
+	/** Remove an entry from input. Adds the removed entry's color to the stack. 
+	 * Removes the ManyInputSelectItem from the list */
 	public void remove(ManyInputSelectItem item){
 		colorStack.push(item.color);
 		inputs.remove(item);
 	}
 	
+	/** The class ManyInputSelectItem */
 	public class ManyInputSelectItem {
 		private String input;
 		private String color;

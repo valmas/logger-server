@@ -39,23 +39,24 @@ import com.ntua.ote.logger.web.service.GeolocateService;
 @Stateless
 @Path("/log")
 public class RestApplicationEndpoint {
-	
+
 	private static final Logger LOGGER = Logger.getLogger(RestApplicationEndpoint.class);
-	
+
 	@Inject
 	private LoggerDAO loggerDAO;
-	
+
+	/** REST Service for receiving a Log with the initial information */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON + ";charset=utf-8")
 	@Produces(MediaType.APPLICATION_JSON)
-    @Path("/initial/")
-    public long initialLogging(InitialRequest initialRequest) {
-		if(loggerDAO.login(initialRequest.getUserName(), initialRequest.getPassword())) {
+	@Path("/initial/")
+	public long initialLogging(InitialRequest initialRequest) {
+		if (loggerDAO.login(initialRequest.getUserName(), initialRequest.getPassword())) {
 			LOGGER.info("<initialLogging invoked>" + initialRequest);
 			Log log = new Log();
 			log.setBrandModel(initialRequest.getBrandModel());
 			log.setCellId(initialRequest.getCellId());
-			if(initialRequest.getDateTime() != null) {
+			if (initialRequest.getDateTime() != null) {
 				log.setDateTime(new Timestamp(initialRequest.getDateTime().getTime()));
 			}
 			log.setDirection(initialRequest.getDirection());
@@ -78,98 +79,101 @@ public class RestApplicationEndpoint {
 			return loggerDAO.addLog(log);
 		}
 		return -1;
-    }
-	
+	}
+
+	/**
+	 * REST Service for receiving the location that the Log took place. If the
+	 * location is unavailable a call to Mozilla Location Services is invoked in
+	 * order to retrieve an estimation of the location
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-    @Path("/location/")
-    public int locationLogging(LocationRequest locationRequest) {
-		if(loggerDAO.login(locationRequest.getUserName(), locationRequest.getPassword())) {
+	@Path("/location/")
+	public int locationLogging(LocationRequest locationRequest) {
+		if (loggerDAO.login(locationRequest.getUserName(), locationRequest.getPassword())) {
 			LOGGER.info("<locationLogging> invoked" + locationRequest);
-			if(locationRequest.isLocated()) {
-				return loggerDAO.updateLocation(locationRequest.getRowId(), locationRequest.getLongitude(), locationRequest.getLatitude());
+			if (locationRequest.isLocated()) {
+				return loggerDAO.updateLocation(locationRequest.getRowId(), locationRequest.getLongitude(),
+						locationRequest.getLatitude());
 			} else {
-				/*final long id = locationRequest.getRowId();
-				new Thread(new Runnable() {
-					
-					@Override
-					public void run() {
-						Log log = loggerDAO.get(id);
-						GeolocateResponse geolocateResponse = GeolocateService.geolocate(log);
-						if(geolocateResponse != null) {
-							loggerDAO.updateLocation(id, geolocateResponse.getLocation().getLat(), geolocateResponse.getLocation().getLng(),  
-								geolocateResponse.getAccuracy());
-						}
-					}
-				}).start();*/
 				Log log = loggerDAO.get(locationRequest.getRowId());
 				GeolocateResponse geolocateResponse = GeolocateService.geolocate(log);
-				if(geolocateResponse != null && geolocateResponse.getError() == null) {
-					loggerDAO.updateLocation(locationRequest.getRowId(), geolocateResponse.getLocation().getLng(), geolocateResponse.getLocation().getLat(),  
-						geolocateResponse.getAccuracy());
+				if (geolocateResponse != null && geolocateResponse.getError() == null) {
+					loggerDAO.updateLocation(locationRequest.getRowId(), geolocateResponse.getLocation().getLng(),
+							geolocateResponse.getLocation().getLat(), geolocateResponse.getAccuracy());
 				}
 				return 1;
 			}
 		}
 		return -1;
-    }
-	
+	}
+
+	/** REST Service for receiving the call duration of a Log */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-    @Path("/duration/")
-    public int durationLogging(DurationRequest durationRequest) {
-		if(loggerDAO.login(durationRequest.getUserName(), durationRequest.getPassword())) {
+	@Path("/duration/")
+	public int durationLogging(DurationRequest durationRequest) {
+		if (loggerDAO.login(durationRequest.getUserName(), durationRequest.getPassword())) {
 			LOGGER.info("<durationLogging> invoked" + durationRequest);
 			return loggerDAO.updateDuration(durationRequest.getRowId(), durationRequest.getDuration());
 		}
 		return -1;
-    }
-	
+	}
+
+	/**
+	 * REST Service for sending the number and the change log of the latest
+	 * existing version
+	 */
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-    @Path("/checkVersion/")
-    public String checkVersion(AuthenticationRequest authRequest) {
-		if(loggerDAO.login(authRequest.getUserName(), authRequest.getPassword())) {
+	@Path("/checkVersion/")
+	public String checkVersion(AuthenticationRequest authRequest) {
+		if (loggerDAO.login(authRequest.getUserName(), authRequest.getPassword())) {
 			Version version = parseVersionXml();
-			if(version != null) {
+			if (version != null) {
 				LOGGER.info("<check Version> invoked" + version.getVersionNumber());
 				Gson builder = new GsonBuilder().create();
 				return builder.toJson(version);
 			}
 		}
-		return null;		
-    }
-	
+		return null;
+	}
+
+	/** REST Service for sending the apk of the latest existing version */
 	@POST
-    @Path("/update/")
+	@Path("/update/")
 	@Produces(MediaType.APPLICATION_OCTET_STREAM)
 	public Response update(AuthenticationRequest authRequest) {
-		if(loggerDAO.login(authRequest.getUserName(), authRequest.getPassword())) {
+		if (loggerDAO.login(authRequest.getUserName(), authRequest.getPassword())) {
 			Version version = parseVersionXml();
-			if(version != null) {
+			if (version != null) {
 				LOGGER.info("<update> invoked" + version.getVersionNumber());
 				String fileName = "logger_v" + version.getVersionNumber();
 				String path = System.getProperty("SERVER_PATH") + "../update/";
-			    File file = new File(path + fileName);
-			    ResponseBuilder response = Response.ok((Object) file);
-			    response.header("Content-Disposition", "attachment; filename=" + fileName);
-			    return response.build();
-			} 
+				File file = new File(path + fileName);
+				ResponseBuilder response = Response.ok((Object) file);
+				response.header("Content-Disposition", "attachment; filename=" + fileName);
+				return response.build();
+			}
 		}
 		return null;
 	}
-	
-	private Version parseVersionXml(){
+
+	/**
+	 * Parses the version.xml which contains the version number and the change
+	 * log of the latest version
+	 */
+	private Version parseVersionXml() {
 		String path = System.getProperty("SERVER_PATH") + "../update/";
-		File file  = new File(path + "version.xml");
+		File file = new File(path + "version.xml");
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder;
 		try {
 			dBuilder = dbFactory.newDocumentBuilder();
 			Document doc = dBuilder.parse(file);
-			doc.getDocumentElement().normalize();	
+			doc.getDocumentElement().normalize();
 			NodeList nList = doc.getElementsByTagName("latestVersion");
 			Element latestVersion = (Element) nList.item(0);
 			String versionNumber = latestVersion.getElementsByTagName("versionNumber").item(0).getTextContent();

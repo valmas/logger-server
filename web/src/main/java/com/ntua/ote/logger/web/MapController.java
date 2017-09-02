@@ -24,6 +24,7 @@ import com.ntua.ote.logger.core.models.LogDetails;
 import com.ntua.ote.logger.core.models.SearchCriteria;
 import com.ntua.ote.logger.persistence.LoggerDAOImpl;
 import com.ntua.ote.logger.web.common.FacesUtil;
+import com.ntua.ote.logger.web.common.LocaleManager;
 import com.ntua.ote.logger.web.xls.XLSBuilder;
 import com.ntua.ote.logger.web.xls.XLSMappings;
 
@@ -37,6 +38,9 @@ public class MapController implements Serializable {
 
 	@Inject
 	private LoggerDAOImpl dao;
+	
+	@Inject
+	private LocaleManager localeManager;
 
 	private SearchCriteria searchCriteria;
 	
@@ -119,7 +123,7 @@ public class MapController implements Serializable {
 	
 	public void export(){
 		try {
-			byte[] xls = XLSBuilder.exportXLS(logs, XLSMappings.logDetailsMapping, XLSMappings.logDetailsHeader);
+			byte[] xls = XLSBuilder.exportXLS(logs, XLSMappings.logDetailsMapping, XLSMappings.logDetailsHeader, localeManager.getLanguage());
 			FacesUtil.download("logDetails.xls", xls);
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage());

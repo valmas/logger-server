@@ -60,7 +60,7 @@ public class RelationFinderController implements Serializable {
 			List<Node> nodes = results.getNodes();
 			if(!nodes.isEmpty() && nodes.size() > 1) {
 				if(StringUtils.hasLength(searchCriteria.getExternalPhoneNumber()) && !results.isRelationFound()) {
-					FacesUtil.addInfoMessage(FacesUtil.getMessage("error.no.relation") + searchCriteria.getPhoneNumber() + 
+					FacesUtil.addInfoMessage(FacesUtil.getMessage("error.no.relation") + " " + searchCriteria.getPhoneNumber() + 
 							" - " + searchCriteria.getExternalPhoneNumber(), null, false);
 					error = true;
 					model = null;

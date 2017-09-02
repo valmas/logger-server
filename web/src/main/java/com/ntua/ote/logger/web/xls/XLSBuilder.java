@@ -192,9 +192,8 @@ public class XLSBuilder {
 	 * @return the excel file in byte[]
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static byte[] exportXLS(List<? extends Serializable> results, XLSColumn[] mappings, String header) throws IOException {
+	public static byte[] exportXLS(List<? extends Serializable> results, XLSColumn[] mappings, String header, String language) throws IOException {
 		
-		String language = FacesContext.getCurrentInstance().getViewRoot().getLocale().getLanguage();
 		InputStream input = Thread.currentThread().getContextClassLoader()
 				.getResourceAsStream("CommonMessages_"+language.toLowerCase()+".properties");
 		resourceBundles.load(input);
