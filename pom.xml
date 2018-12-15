@@ -22,7 +22,7 @@
 		<java.source.compile.version>1.7</java.source.compile.version>
 		<java.target.compile.version>1.7</java.target.compile.version>
 
-		<org.springframework.version>4.1.4.RELEASE</org.springframework.version>
+		<org.springframework.version>4.3.17.RELEASE</org.springframework.version>
 		<org.primefaces.version>6.0</org.primefaces.version>
 		<com.sun.faces.jsf.version>2.1.25</com.sun.faces.jsf.version>
 		<apache.poi.version>3.15</apache.poi.version>

@@ -54,3 +54,5 @@ pom.xml.versionsBackup
 *.orig
 pom.properties
 git-flow
+.idea
+*.iml
